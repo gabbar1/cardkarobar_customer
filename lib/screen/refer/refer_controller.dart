@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:upen/screen/partner/model/user_details.dart';
 
+
+
 class ReferController extends GetxController{
   
   var referralList = <UserDetailModel>[].obs;
@@ -12,6 +14,7 @@ class ReferController extends GetxController{
     referralList.value.add(val);
     referralList.refresh();
   }
+
 
   DocumentSnapshot lastRefferalDocument ;
   getReferralUserList() {

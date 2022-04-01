@@ -50,6 +50,7 @@ class AssignLeadController extends GetxController{
     historyLeadList.value.add(val);
     historyLeadList.refresh();
   }
+
   DocumentSnapshot  lastHistoryDocument;
   historyLead(){
     historyLeadList.value.clear();
@@ -79,6 +80,8 @@ class AssignLeadController extends GetxController{
       });
     });
   }
+
+
 
   Future<void> assignLead(LeadModel leadModel) async{
     try{

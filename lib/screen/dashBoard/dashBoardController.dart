@@ -2,10 +2,14 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:mailer/mailer.dart';
+import 'package:upen/commonWidget/loader.dart';
 import 'package:upen/screen/dashBoard/models/productModel.dart';
 
 import 'models/bannerModel.dart';
+import 'service/cardkarobar.dart';
 
 class DashBoardController extends GetxController{
 
@@ -14,7 +18,7 @@ class DashBoardController extends GetxController{
   var isHide = false.obs;
   bool get getIsHide => isHide.value;
 
- var productList = <ProductModel>[].obs;
+  var productList = <ProductModel>[].obs;
   List<ProductModel> get getProducts=> productList.value;
 
   setIsHide(bool val){
@@ -26,8 +30,6 @@ class DashBoardController extends GetxController{
     this.banners.add(bannerModel);
 
   }
-
-
 
   Future<void> getBannerList()async{
     banners.value.clear();

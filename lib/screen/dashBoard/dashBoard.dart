@@ -93,7 +93,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                                               ],),
                         InkWell(
                           onTap: (){
-                            Get.snackbar("Message", "Do not have sufficient money to redeem");
+                           dashBoardController.redeemMoney();
                           },
                           child: Container(
                             padding: EdgeInsets.all(10),
