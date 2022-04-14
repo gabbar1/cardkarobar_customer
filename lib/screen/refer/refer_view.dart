@@ -13,6 +13,8 @@ import 'package:upen/screen/partner/controller/partner_controller.dart';
 import 'package:upen/screen/profile/personalDetails/personalDetailController.dart';
 import 'package:upen/screen/refer/refer_controller.dart';
 
+import '../../commonWidget/notification.dart';
+
 class ReferView extends StatefulWidget {
   @override
   _ReferViewState createState() => _ReferViewState();
@@ -176,11 +178,11 @@ class _ReferViewState extends State<ReferView> {
         enablePullUp: true,
         controller: _refreshController,
         onRefresh: () {
-          print("-------------checkRefresh");
+
           referController.getRefreshReferralUserList();
         },
         onLoading: () {
-          print("-------------checkLoading");
+
             referController.getRefreshReferralUserList();
             _refreshController.loadComplete();
 
@@ -258,24 +260,31 @@ class _ReferViewState extends State<ReferView> {
                                       fontSize: 15)
                                 ],
                               ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 5,
-                                    right: 5,
-                                    bottom: 5,
-                                    top: 5),
-                                decoration: BoxDecoration(
-                                    color: Constants()
-                                        .mainColor
-                                        .withOpacity(0.7),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5))),
-                                child: CommonText(
-                                    text: referController
-                                        .getReferralList[index]
-                                        .current_wallet=="null" ?"₹ 0":"₹ ${referController
-                                        .getReferralList[index]
-                                        .current_wallet}"),
+                              Column(
+                                children: [
+                                  IconButton(onPressed: (){
+                                    sendNotification(token: referController.getReferralList[index].fcm_token,title: "Lead Upload",message: " Dear ${referController.getReferralList[index].advisorName} from last fev days your are not active in lead upload. Please upload more leads for more payout hurry up 🔥🔥🔥🔥🔥🔥🔥");
+                                  }, icon: Icon(Icons.add_alert_rounded,color: Constants().mainColor,)),
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 5,
+                                        right: 5,
+                                        bottom: 5,
+                                        top: 5),
+                                    decoration: BoxDecoration(
+                                        color: Constants()
+                                            .mainColor
+                                            .withOpacity(0.7),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5))),
+                                    child: CommonText(
+                                        text: referController
+                                            .getReferralList[index]
+                                            .current_wallet=="null" ?"₹ 0":"₹ ${referController
+                                            .getReferralList[index]
+                                            .current_wallet}"),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

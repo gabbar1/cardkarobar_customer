@@ -69,7 +69,6 @@ class _ReferInfoViewState extends State<ReferInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    print(_partnerController.getAboutList.length);
 
     return Scaffold(
       appBar: AppBar(
@@ -351,8 +350,7 @@ class _ReferInfoViewState extends State<ReferInfoView> {
   }
 
   Widget about() {
-    print("widget.referModel.youtube ");
-    print(widget.referModel.youtube );
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -697,9 +695,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                       );
                                     }).toList(),
                                     validator: (value) {
-                                      print(
-                                          "-----------ValidatedOr not------------");
-                                      print(value);
+
                                       if (value == null) {
                                         return 'Field required';
                                       }
@@ -767,7 +763,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                       "RBL BANK"
                                     ].map((String value) {
                                       setState(() {
-                                        print(existingCreditCard);
+
                                         cardBank = value;
                                       });
                                       return DropdownMenuItem<String>(

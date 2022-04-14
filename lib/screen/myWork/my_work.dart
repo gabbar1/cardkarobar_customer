@@ -33,10 +33,8 @@ class _MyWorkState extends State<MyWork> {
     // _personalDetailsController.personalDetails();
 
     if (widget.status == "new_number") {
-      print(
-          "''''''''''''''''''''_myWorkController.getContactList(status: widget.status);''");
+
       if (!_myWorkController.getIsPreventNewCalling) {
-        print("''''''''''''''''''''tatus);''");
 
         _myWorkController.setIsPreventNewCalling(true);
         _myWorkController.getContactList(status: widget.status);

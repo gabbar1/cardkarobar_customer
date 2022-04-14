@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:get/get.dart';
@@ -7,16 +8,18 @@ import 'package:upen/screen/assigned_lead/assign_lead_controller.dart';
 
 import '../../commonWidget/commonWidget.dart';
 import '../../commonWidget/loader.dart';
+import '../../commonWidget/notification.dart';
 import '../helper/constant.dart';
 import '../partner/model/leadModel.dart';
 import '../partner/model/referModel.dart';
 import '../profile/personalDetails/personalDetailController.dart';
 
 class StatusUpdate extends StatefulWidget {
-  StatusUpdate({this.appliedBank, this.referModel});
+  StatusUpdate({this.appliedBank, this.referModel,this.leadType});
 
   LeadModel referModel;
   String appliedBank;
+  String leadType;
 
   @override
   _StatusUpdateState createState() => _StatusUpdateState();
@@ -63,12 +66,23 @@ class _StatusUpdateState extends State<StatusUpdate> {
   TextEditingController isFixedPriceController = TextEditingController();
   TextEditingController applicationNumberController = TextEditingController();
   AssignLeadController _assignLeadController = Get.find();
-
+  String assignleadStatus;
+  String existinglist;
+  String currentBank;
+  String existingBanklist;
   @override
   void initState() {
     // TODO: implement initState
     clearText();
     assignData();
+    currentBank = widget.appliedBank;
+    existingBanklist = widget.appliedBank;
+
+    if(widget.referModel.type == "Credit Card"){
+      _assignLeadController.productList();
+    }
+
+
     super.initState();
   }
 
@@ -90,13 +104,10 @@ class _StatusUpdateState extends State<StatusUpdate> {
     applicationNumberController.clear();
   }
 
-  String assignleadStatus = "--Assign Type--";
-  String existinglist;
+
 
   @override
   Widget build(BuildContext context) {
-    print("==========widget.referModel.type=============");
-    print(widget.referModel.type);
 
     return Scaffold(
       appBar: AppBar(
@@ -116,6 +127,38 @@ class _StatusUpdateState extends State<StatusUpdate> {
                 const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
             child: Column(
               children: [
+
+                Stack(
+                  children: [
+                    CommonTextInputWithTitle(
+                      title: "Lead Given By",
+                      isReadOnly: true,
+                      hint: "Enter Customer Mobile",
+                      inputController: TextEditingController(text: _assignLeadController.getReferralDetails.advisorName),),
+                    Positioned(right: 5,child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20,
+                          left: 50.0, right: 5),
+                      child: IconButton(
+                          onPressed: () {
+                            FlutterPhoneDirectCaller.callNumber(
+                                _assignLeadController.getReferralDetails.advisorPhoneNumber);
+                          },
+                          icon: CircleAvatar(
+                              backgroundColor: Constants()
+                                  .mainColor
+                                  .withOpacity(0.4),
+                              child: Icon(
+                                Icons.call,
+                                color: Constants().mainColor,
+                                size: 20,
+                              ))),
+                    ),)
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 CommonTextInputWithTitle(
                     title: "Customer Name",
                 isReadOnly: true,
@@ -162,6 +205,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                     ),)
                   ],
                 ),
+
                 SizedBox(
                   height: 10,
                 ),
@@ -181,16 +225,69 @@ class _StatusUpdateState extends State<StatusUpdate> {
                 SizedBox(
                   height: 10,
                 ),
-
                 SizedBox(
                   height: 10,
                 ),
                 if (widget.referModel.type == "Credit Card") ...[
+
                   CommonTextInputWithTitle(
                       title: "Applied Bank",
                       hint: "Enter Applied Bank",
                       isReadOnly: true,
                       inputController: leadBankController),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xff0F1B25),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CommonText(text: "Change Bank"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Obx(()=>DropdownButtonFormField<String>(
+                            focusColor: Colors.white,
+                            value: widget.appliedBank,
+                            dropdownColor: Constants().appBackGroundColor,
+                            decoration: InputDecoration(
+                              focusColor: Constants().appBackGroundColor,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+
+                            ),
+                            items: _assignLeadController.getProductLists.map((ReferModel value) {
+
+                              return DropdownMenuItem<String>(
+                                onTap: () {
+                                  existingBanklist = value.name;
+                                  widget.referModel.referralPrice = value.price;
+                                  widget.referModel.product = value.name;
+                                },
+                                value: value.name,
+                                child: CommonText(
+                                    text: value.name, textColor: Colors.white),
+                              );
+                            }).toList(),
+                            validator: (value) {
+
+                              if (value == null) {
+                                return 'Field required';
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {},
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
                   if (widget.referModel.customerLeadType == "Business") ...[
                     CommonTextInputWithTitle(
                         title: "Customer ITR",
@@ -204,12 +301,14 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         hint: "Enter Customer Salary",
                         isReadOnly: true,
                         inputController: salaryController)
-                  ] else if (widget.referModel.customerLeadType == "c2c") ...[
+                  ] else if (widget.referModel.customerLeadType == "C2C") ...[
+                    SizedBox(height: 10,),
                     CommonTextInputWithTitle(
-                        title: "Customer Credit Card",
+                        title: "Existing Credit Card",
                         hint: "Enter Customer Credit Card",
                         isReadOnly: true,
                         inputController: c2cController),
+                    SizedBox(height: 10,),
                     CommonTextInputWithTitle(
                         title: "Customer Credit Card Limit",
                         hint: "Enter Customer Credit Card Limit",
@@ -261,7 +360,6 @@ class _StatusUpdateState extends State<StatusUpdate> {
                 CommonTextInputWithTitle(
                   isReadOnly: true,
                     title: "Customer Comment",
-
                     minLines: 5,
                     inputController: customerCommentController,
                     hint: "Customer Comment",
@@ -286,7 +384,6 @@ class _StatusUpdateState extends State<StatusUpdate> {
                   hint:"Enter Customer Required Amount Here",
                   inputController: isFixedPriceController,
                 ),],
-
                 SizedBox(
                   height: 15,
                 ),
@@ -320,8 +417,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                     );
                   }).toList(),
                   validator: (value) {
-                    print("-----------ValidatedOr not------------");
-                    print(value);
+
                     if (value == null) {
                       return 'Field required';
                     }
@@ -352,8 +448,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         Get.snackbar(
                             "Alert", "Assign type should not be Empty");
                       } else if (widget.referModel.isFixedPrice!=null &&!widget.referModel.isFixedPrice && isFixedPriceController.text.isEmpty) {
-                        print(isFixedPriceController.text.isEmpty);
-                        print(widget.referModel.isFixedPrice );
+
                         Get.snackbar(
                             "Alert", "Amount should not be Empty");
                       } else if (_type =='Login' &&applicationNumberController.text.isEmpty){
@@ -371,7 +466,11 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         _leadModel.desireAmount = isFixedPriceController.text;
                         _leadModel.applicationNumber = applicationNumberController.text;
                         _leadModel.isLeadClosed = _type =='Rejected'?true :widget.referModel.isLeadClosed;
-                        _assignLeadController.assignLead(_leadModel);
+                        _assignLeadController.assignLead(_leadModel,widget.leadType).then((value) {
+
+                         // sendPushMessage(token:"eDSr1umgSKq3cPVs_aKVui:APA91bG6XJvMEYi-XTojXmAUDvHd0fC2efmNOL-Vd5hlnBo__T5lcSiNOBTc_YXmz5seM4R1pjn82mnqjBoplZh5gGpHeFA9o6aJCU4QJmTfwxSF6_yWIW7ltN84cIYhKEcoSC3K9pKy",title: "Lead Update" ,message: "Dear ${_assignLeadController.getReferralDetails.advisorName} + Your Customer ${widget.referModel.customerName} 's  ${widget.referModel.product} Leas status is ${widget.referModel.status} ");
+                          sendNotification(token:_assignLeadController.getReferralDetails.fcm_token,title: "Lead Update" ,message: "Dear ${_assignLeadController.getReferralDetails.advisorName} Your Customer ${widget.referModel.customerName} 's  ${widget.referModel.product} Lead status is ${widget.referModel.status} ");
+                        });
                         Get.snackbar(
                             "Alert", "  Status Updated.");
                       }

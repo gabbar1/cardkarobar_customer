@@ -11,6 +11,7 @@ class UserDetailModel {
   int advisorPincode;
   String advisorOccupation;
   String advisorUrl;
+  String fcm_token;
 
 
   UserDetailModel(
@@ -26,6 +27,7 @@ class UserDetailModel {
         this.advisorPincode,
         this.advisorOccupation,
         this.advisorUrl,
+        this.fcm_token,
       });
 
   UserDetailModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class UserDetailModel {
     advisorPincode = json['advisor_pincode'];
     advisorOccupation = json['advisor_occupation'];
     advisorUrl = json['advisor_Url'];
+    fcm_token = json['fcm_token'];
 
   }
 
@@ -58,6 +61,7 @@ class UserDetailModel {
     data['advisor_pincode'] = this.advisorPincode;
     data['advisor_occupation'] = this.advisorOccupation;
     data['advisor_Url'] = this.advisorUrl;
+    data['fcm_token'] = this.fcm_token;
     return data;
   }
 }

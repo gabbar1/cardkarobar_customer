@@ -108,8 +108,7 @@ class MyWorkController extends GetxController{
           UserContactModel _userContactModel = UserContactModel.fromJson(element.data());
           _userContactModel.key = element.id;
            if(status == "rejected_by_day_number"){
-            print("---------------rejected---------------");
-            print(_userContactModel.leadResult);
+
             if(_userContactModel.isCalled!=null &&_userContactModel.leadResult == "StatusCharacter.b" && DateTime.parse(DateTime.now().toString().substring(0, 10)).difference(DateTime.parse(_userContactModel.callDate.substring(0, 10))).inHours<24 ){
               setHistoryLeadList(_userContactModel);
             }
@@ -120,7 +119,7 @@ class MyWorkController extends GetxController{
           }
           }
           else if(status == "calling_by_day_number"){
-            print(_userContactModel.isCalled==null);
+
            if(_userContactModel.isCalled!=null &&_userContactModel.isCalled!=null && _userContactModel.isCalled &&  DateTime.parse(DateTime.now().toString().substring(0, 10)).difference(DateTime.parse(_userContactModel.callDate.substring(0, 10))).inHours<24){
              setHistoryLeadList(_userContactModel);
           }
@@ -136,8 +135,7 @@ class MyWorkController extends GetxController{
             }
           }
           else if(status == "rejected_by_month_number"){
-            print("---------------rejected---------------");
-            print(_userContactModel.leadResult);
+
             if(_userContactModel.isCalled!=null &&_userContactModel.leadResult == "StatusCharacter.b" && DateTime.parse(DateTime.now().toString().substring(0, 10)).difference(DateTime.parse(_userContactModel.callDate.substring(0, 10))).inDays<30 ){
               setHistoryLeadList(_userContactModel);
             }
@@ -198,8 +196,6 @@ class MyWorkController extends GetxController{
           .then((QuerySnapshot querySnapshot) {
 
         querySnapshot.docs.forEach((element) {
-          print("----------------CheckElement----------------");
-         // print(element["advisor_phone_number"]);
 
           UserContactModel _user = UserContactModel(name:element["advisor_name"] ,mobile: element["advisor_phone_number"],isEnabled: element["isEnabled"]);
           setUser(_user);

@@ -9,7 +9,7 @@ class BannerService {
           .get()
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) {
-          print("-----------------Banners----------------");
+
           // print(element.data());
           Map<String, dynamic> bannerList = element.data();
           BannerModel bannerModel = BannerModel.fromJson(bannerList);

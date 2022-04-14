@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:upen/screen/partner/model/leadModel.dart';
-
+import 'package:upen/screen/partner/model/referModel.dart';
 import '../../commonWidget/loader.dart';
+import '../profile/personalDetails/personalDetailModel.dart';
 
 class AssignLeadController extends GetxController{
 
@@ -15,10 +17,10 @@ class AssignLeadController extends GetxController{
     newLeadList.refresh();
   }
   DocumentSnapshot  lastNewDocument;
-  latestLead(){
+  latestLead(String leadType){
     newLeadList.value.clear();
-    FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
-    where("status",isEqualTo: "UnderProcess").limit(10).get().then((value) {
+    FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo:FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
+    where("status",isEqualTo: leadType).limit(10).get().then((value) {
       if(value.docs.isNotEmpty){
         lastNewDocument = value.docs[value.docs.length -1];
       }
@@ -29,9 +31,9 @@ class AssignLeadController extends GetxController{
       });
     });
   }
-  refreshLatestLead(){
+  refreshLatestLead(String leadType){
     FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
-    where("status",isEqualTo: "UnderProcess").limit(10).startAfterDocument(lastNewDocument).get().then((value) {
+    where("status",isEqualTo: leadType).limit(10).startAfterDocument(lastNewDocument).get().then((value) {
       if(value.docs.isNotEmpty){
         lastNewDocument = value.docs[value.docs.length -1];
       }
@@ -44,52 +46,13 @@ class AssignLeadController extends GetxController{
   }
 
 
-  var historyLeadList = <LeadModel>[].obs;
-  List<LeadModel> get getHistoryLeadList =>historyLeadList.value;
-  set setHistoryLeadList(LeadModel val){
-    historyLeadList.value.add(val);
-    historyLeadList.refresh();
-  }
-
-  DocumentSnapshot  lastHistoryDocument;
-  historyLead(){
-    historyLeadList.value.clear();
-    FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
-    where("status",isNotEqualTo: "UnderProcess").limit(10).get().then((value) {
-      if(value.docs.isNotEmpty){
-        lastHistoryDocument = value.docs[value.docs.length -1];
-      }
-      value.docs.forEach((element) {
-        LeadModel leadModel = LeadModel.fromJson(element.data());
-        leadModel.key = element.id;
-        setHistoryLeadList = leadModel;
-      });
-    });
-  }
-
-  refreshHistoryLead(){
-    FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
-    where("status",isNotEqualTo: "UnderProcess").orderBy("status").limit(10).startAfterDocument(lastHistoryDocument).get().then((value) {
-      if(value.docs.isNotEmpty){
-        lastHistoryDocument = value.docs[value.docs.length -1];
-      }
-      value.docs.forEach((element) {
-        LeadModel leadModel = LeadModel.fromJson(element.data());
-        leadModel.key = element.id;
-        setHistoryLeadList = leadModel;
-      });
-    });
-  }
-
-
-
-  Future<void> assignLead(LeadModel leadModel) async{
+  Future<void> assignLead(LeadModel leadModel,String leadType) async{
     try{
       showLoader();
         FirebaseFirestore.instance.collection("leads").doc(leadModel.key).update(leadModel.toJson()).then((value) {
           Navigator.pop(Get.context);
-          latestLead();
-          historyLead();
+          latestLead(leadType);
+         // historyLead();
           Get.snackbar("Alert", "Data Assigned");
         }
         );closeLoader();
@@ -101,15 +64,64 @@ class AssignLeadController extends GetxController{
   }
 
   searchLead(int phone){
-    historyLeadList.value.clear();
+    newLeadList.value.clear();
     FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
     where("customer_phone",isEqualTo: phone).get().then((value) {
       value.docs.forEach((element) {
         LeadModel leadModel = LeadModel.fromJson(element.data());
         leadModel.key = element.id;
-        setHistoryLeadList = leadModel;
-        setNewLeadList=leadModel;
+        setNewLeadList = leadModel;
       });
+    });
+  }
+  searchLeadByName(String name){
+    newLeadList.value.clear();
+    FirebaseFirestore.instance.collection("leads").where("assignedTo",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
+    orderBy("customer_name").where("customer_name",isGreaterThanOrEqualTo: name).where("customer_name",isLessThanOrEqualTo: name + '\uf8ff').get().then((value) {
+      value.docs.forEach((element) {
+        LeadModel leadModel = LeadModel.fromJson(element.data());
+        leadModel.key = element.id;
+        setNewLeadList = leadModel;
+      });
+    });
+  }
+
+  var productLists = <ReferModel>[].obs;
+  List<ReferModel> get getProductLists => productLists.value;
+  set setProductLists(ReferModel val){
+    productLists.value.add(val);
+    productLists.refresh();
+  }
+  productList(){
+    productLists.value.clear();
+    productLists.refresh();
+
+    FirebaseFirestore.instance.collection("direct-selling-referral").where("type",isEqualTo: "Credit Card").get().then((value) {
+      if(!value.docs.isEmpty){
+        value.docs.forEach((element) {
+          ReferModel referModel = ReferModel.fromJson(element.data());
+          referModel.key = element.id;
+
+          setProductLists = referModel;
+        });
+      }
+    });
+  }
+
+  var referralDetail = UserDetailModel().obs;
+  UserDetailModel get getReferralDetails => referralDetail.value;
+  set setReferralDetails(UserDetailModel val){
+    referralDetail.value =val;
+    referralDetail.refresh();
+  }
+  referralDetails(String referralID){
+    FirebaseFirestore.instance.collection("user_details").doc(referralID).get().then((value) {
+
+      if(value.exists){
+
+        UserDetailModel userDetailModel = UserDetailModel.fromJson(value.data());
+        setReferralDetails = userDetailModel;
+      }
     });
   }
 }

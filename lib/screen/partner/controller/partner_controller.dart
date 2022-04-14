@@ -77,8 +77,7 @@ class PartnerController extends GetxController{
 
           ReferModel referModel = ReferModel.fromJson(element.data());
           referModel.key = element.id;
-          print(jsonEncode(element.data()));
-          print("===================================");
+
           setReferList(referModel);
 
         });
@@ -87,7 +86,7 @@ class PartnerController extends GetxController{
       referList.value.clear();
       FirebaseFirestore.instance.collection("direct-selling-referral").get().then((value) {
         value.docs.forEach((element) {
-          print(jsonEncode(element.data()));
+
           ReferModel referModel = ReferModel.fromJson(element.data());
           referModel.key = element.id;
           setReferList(referModel);
@@ -104,29 +103,26 @@ class PartnerController extends GetxController{
     knowMoreList.clear();
     FirebaseFirestore.instance.collection("direct-selling-referral").doc(category).collection("about").get().then((eValue) {
       eValue.docs.forEach((element) {
-        print("==============about=====================");
-        print(jsonEncode(element.data()));
+
         About _about = About.fromJson(element.data());
         setAboutList(_about);
-        print("==============about=====================");
+
       });
     });
     FirebaseFirestore.instance.collection("direct-selling-referral").doc(category).collection("faq").get().then((eValue) {
       eValue.docs.forEach((element) {
-        print("==============faq=====================");
-        print(jsonEncode(element.data()));
+
         Faq _faq = Faq.fromJson(element.data());
         setFaqList(_faq);
-        print("==============faq=====================");
+
       });
     });
     FirebaseFirestore.instance.collection("direct-selling-referral").doc(category).collection("how-to-earn").get().then((eValue) {
       eValue.docs.forEach((element) {
-        print("==============how to earn=====================");
-        print(jsonEncode(element.data()));
+
         HowToEarn _howToEarn = HowToEarn.fromJson(element.data());
         setHowToEarnListList(_howToEarn);
-        print("==============how to earn=====================");
+
       });
     });
     FirebaseFirestore.instance.collection("direct-selling-referral").doc(category).collection("know-more").get().then((eValue) {
@@ -141,7 +137,6 @@ class PartnerController extends GetxController{
   }
 
     Future<void> submitReferral(LeadModel leadModel,String url) async{
-
       _launchURL() async {
           await launch(url);
       }
@@ -203,11 +198,60 @@ class PartnerController extends GetxController{
     });
 
   }
+
+
+  latestLead(String leadType){
+    print("=============leadType=================");
+    print("=============leadType=================");
+    print(leadType);
+    leadList.value.clear();
+    FirebaseFirestore.instance.collection("leads").where("referral_id",isEqualTo: int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", ""))).
+    where("status",isEqualTo: leadType).limit(10).get().then((value) {
+
+      if(value.docs.isNotEmpty){
+        lastDocument = value.docs[value.docs.length -1];
+      }
+      value.docs.forEach((element) {
+        print(element.data());
+        LeadModel leadModel = LeadModel.fromJson(element.data());
+        leadModel.key = element.id;
+        setLeadList(leadModel);
+      });
+    });
+  }
+  refreshLatestLead(String leadType){
+    FirebaseFirestore.instance.collection("leads").where("referral_id",isEqualTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).
+    where("status",isEqualTo: leadType).limit(10).startAfterDocument(lastDocument).get().then((value) {
+      if(value.docs.isNotEmpty){
+        lastDocument = value.docs[value.docs.length -1];
+      }
+      value.docs.forEach((element) {
+        LeadModel leadModel = LeadModel.fromJson(element.data());
+        leadModel.key = element.id;
+        setLeadList(leadModel);
+      });
+    });
+  }
+
+
   Future<void> mySearchLeads(int phone) async{
     leadList.value.clear();
 
     print("===================New Load======================");
     FirebaseFirestore.instance.collection("leads").where("customer_phone",isEqualTo:phone ).get().then((value) {
+      value.docs.forEach((element) {
+        LeadModel leadModel = LeadModel.fromJson(element.data());
+        setLeadList(leadModel);
+      });
+    });
+
+  }
+  Future<void> searchLeadByName(String name) async{
+    leadList.value.clear();
+    leadList.refresh();
+    print("===================New Load======================");
+    FirebaseFirestore.instance.collection("leads").orderBy("customer_name")
+        .where("customer_name",isGreaterThanOrEqualTo: name).where("customer_name",isLessThanOrEqualTo: name + '\uf8ff').get().then((value) {
       value.docs.forEach((element) {
         LeadModel leadModel = LeadModel.fromJson(element.data());
         setLeadList(leadModel);
@@ -258,7 +302,6 @@ class PartnerController extends GetxController{
     }
 
   }
-
   void deletePartner(ReferModel refer) {
     showLoader();
     try{
@@ -278,7 +321,6 @@ class PartnerController extends GetxController{
     }
 
   }
-
   var productCategoryList = <CategoryModel>[].obs;
   List<CategoryModel> get getProductCategoryList => productCategoryList.value;
   setProductCategory(CategoryModel val){

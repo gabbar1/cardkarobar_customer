@@ -28,7 +28,7 @@ class ReferController extends GetxController{
         value.docs.forEach((element) {
           Map<String, dynamic> ReferralList = element.data();
           UserDetailModel userDetailModel = UserDetailModel.fromJson(ReferralList);
-          print(userDetailModel.toJson());
+
           setReferralUserList(userDetailModel);
         }
         );
@@ -50,7 +50,7 @@ class ReferController extends GetxController{
         value.docs.forEach((element) {
           Map<String, dynamic> ReferralList = element.data();
           UserDetailModel userDetailModel = UserDetailModel.fromJson(ReferralList);
-          print(userDetailModel.toJson());
+
           setReferralUserList(userDetailModel);
         }
         );

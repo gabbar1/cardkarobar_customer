@@ -396,8 +396,7 @@ class CommonDatePicker extends GetxController {
                       child: child,
                     );
                   });
-              print("---------------PickedDate------------------");
-              print(picked);
+
               if (picked != null && picked != selectedStartDate) {
                 selectedStartDate = picked;
                 print(selectedStartDate);

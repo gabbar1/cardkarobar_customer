@@ -39,9 +39,7 @@ class UserListController extends GetxController {
     userLeadDetails.refresh();
   }
   Future<void> getUserLeadDetails(String mobile,name,bool isEnabled)async{
-    print(mobile);
-    print(name);
-    print(isEnabled);
+
     userLeadDetails.value.clear();
     try{
       UserContactModel _userModel = UserContactModel(name: name, mobile: mobile,isEnabled: isEnabled);

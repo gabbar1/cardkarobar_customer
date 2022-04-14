@@ -100,7 +100,7 @@ class PersonalDetailsController extends GetxController{
     FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).get().then((value) {
       UserDetailModel _userDetailModel = UserDetailModel();
       setUserModel(_userDetailModel);
-      print(value.data().cast());
+
       UserDetailModel userDetailModel = UserDetailModel.fromJson(value.data().cast());
       setUserModel(userDetailModel);
     });
@@ -160,8 +160,7 @@ class PersonalDetailsController extends GetxController{
         documentUrl.value ="";
         documentUrl.value = link;
         documentUrl.refresh();
-        print("-----------getDocumentUrl----------;");
-        print(getDocumentUrl);
+
         personal.UserDetailModel userDetailModel = personal.UserDetailModel(
             advisorName: getNameController.text,
             advisorAdd1: getAdd1Controller.text,

@@ -79,10 +79,7 @@ class _DatePickerState extends State<DatePicker> {
                 lastDate: DateTime(2100));
             widget.dateController.text = date.toString().substring(0,10);
             setState(() {
-             // customerVerificationController.odbController.text =  date.toString().substring(0,10);
-             // customerVerificationController.setDob(date.toString().substring(0,10));
-              print("---------------Datesssss-----------");
-            //  print(customerVerificationController.odbController.text);
+                       //  print(customerVerificationController.odbController.text);
             });
 
           },),

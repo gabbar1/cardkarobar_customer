@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upen/commonWidget/commonWidget.dart';
 import 'package:upen/screen/helper/constant.dart';
 import 'package:upen/screen/profile/personalDetails/personalDetailsPage.dart';
@@ -143,7 +145,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             ElevatedButton(
                 onPressed: () async{
+                  final prefs = await SharedPreferences.getInstance();
                   await FirebaseAuth.instance.signOut();
+                  prefs.remove("fcm");
+                  FirebaseMessaging.instance.deleteToken();
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red),

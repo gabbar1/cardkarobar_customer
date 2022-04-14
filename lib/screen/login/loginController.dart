@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upen/commonWidget/loader.dart';
 import 'package:upen/screen/dashBoard/homeNavigator.dart';
 import 'package:upen/screen/helper/constant.dart';
@@ -43,7 +45,7 @@ class LoginController extends GetxController {
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {};
     final PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException authException) {
-      print('${authException.message}');
+
       Get.snackbar("Error Code 1 : ", authException.message.toString());
     };
 
@@ -52,7 +54,6 @@ class LoginController extends GetxController {
       this.verficationId = verId;
 
       if (codeSent) {
-        print("OTP screen redirect");
         setIsOtp = true;
         closeLoader();
        // Get.to(VerifyOtpScreen());
@@ -84,13 +85,23 @@ class LoginController extends GetxController {
         verificationId: verficationId,
         smsCode: otp,
         //8160137998
-      )).then((value) {
+      )).then((value) async{
         closeLoader();
         if(value.additionalUserInfo.isNewUser) {
           Get.offAll(RegsiterView());
           }
           else{
+
           Get.offAll(HomeNavigator());
+          final prefs = await SharedPreferences.getInstance();
+          String fcm = await FirebaseMessaging.instance.getToken();
+          prefs.setString("fcm",fcm);
+
+          FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).update({
+            "fcm_token":fcm
+          });
+
+
           }
       });
     } on Exception catch(e){
@@ -115,8 +126,16 @@ class LoginController extends GetxController {
         'total_wallet':"0",
         'current_wallet':"0",
         'registerDate':Timestamp.now()
-      }).then((value) {
+      }).then((value) async{
         closeLoader();
+        final prefs = await SharedPreferences.getInstance();
+        String fcm = await FirebaseMessaging.instance.getToken();
+          prefs.setString("fcm",fcm);
+
+          FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).update({
+            "fcm_token":fcm
+          });
+
         Get.offAll(HomeNavigator());
       });
     }catch(e){

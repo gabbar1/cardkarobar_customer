@@ -62,11 +62,9 @@ class DashBoardController extends GetxController{
           .then((QuerySnapshot querySnapshot) {
 
         querySnapshot.docs.forEach((element) {
-          print("----------------CheckElement----------------");
 
           ProductModel _productModel = ProductModel(id:element.id,steps: element["steps"] );
-          print(_productModel.id);
-          print(_productModel.steps);
+
           setProductList(_productModel);
         });
       });

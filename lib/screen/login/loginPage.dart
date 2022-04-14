@@ -216,7 +216,7 @@ class LoginView extends StatelessWidget {
                     InkWell(
                       onTap: (){
                         if (loginFormKey.currentState.validate()) {
-                          print("Validated");
+
                           loginController.login(
                             phone: loginController.phoneController.text,
                           );

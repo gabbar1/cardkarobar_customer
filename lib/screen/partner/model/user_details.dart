@@ -14,6 +14,7 @@ class UserDetailModel {
   String advisorUrl;
   String total_wallet;
   String current_wallet;
+  String fcm_token;
   bool isAdmin;
   bool isEnabled;
 
@@ -34,6 +35,7 @@ class UserDetailModel {
         this.total_wallet,
         this.current_wallet,
         this.isEnabled,
+        this.fcm_token,
         this.isAdmin});
 
   UserDetailModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class UserDetailModel {
     current_wallet = json['current_wallet'].toString();
     isAdmin = json['isAdmin'];
     isEnabled = json['isEnabled'];
+    fcm_token = json['fcm_token'];
 
   }
 
@@ -77,6 +80,7 @@ class UserDetailModel {
     data['current_wallet'] = this.current_wallet;
     data['isAdmin'] = this.isAdmin;
     data['isEnabled'] = this.isEnabled;
+    data['fcm_token'] = this.fcm_token;
 
     return data;
   }

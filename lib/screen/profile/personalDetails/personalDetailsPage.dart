@@ -224,8 +224,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                                 value;
                             _personalDetailsController.occupationType
                                 .refresh();
-                            print(
-                                _personalDetailsController.getOccupationType);
+
                           },
                         )
                       ],
@@ -306,7 +305,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
             CommonButton(
               onPressed: () {
-                print(_personalDetailsController.getFilePath);
+
                 if(_personalDetailsController.getFilePath ==""){
                   UserDetailModel userDetailModel = UserDetailModel(
                       advisorName: _personalDetailsController.getNameController.text,
@@ -376,7 +375,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     if (pickedFile != null) {
       displayImageOptions(pickedFile.path);
     } else {
-      print('No image selected.');
+
     }
   }
 
@@ -386,7 +385,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     if (pickedFile != null) {
       displayImageOptions(pickedFile.path);
     } else {
-      print('No image selected.');
+
     }
   }
 

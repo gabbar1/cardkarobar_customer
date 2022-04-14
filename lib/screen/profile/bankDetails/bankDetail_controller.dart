@@ -47,7 +47,7 @@ setBankModel(UserBankDetailModel val){
 Future<void> bankDetails() async{
 
   FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).collection("bank_details").doc("bank_details").get().then((value) {
-    print(value.data().cast());
+
     UserBankDetailModel userBankDetailModel = UserBankDetailModel.fromJson(value.data().cast());
     setBankModel(userBankDetailModel);
   });
@@ -60,8 +60,7 @@ Future uploadPic(File image) async {
   var taskSnapshot = await uploadTask.storage;
   Reference ref = await taskSnapshot.ref().child(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).child(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")+".jpeg");
   String downloadUrl = await ref.getDownloadURL();
-  print("-----------------------------");
-  print(downloadUrl);
+
   if(downloadUrl!=null){
 
     UserBankDetailModel userBankDetailModel = UserBankDetailModel(

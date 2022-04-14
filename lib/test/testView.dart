@@ -21,7 +21,7 @@ class _TestViewState extends State<TestView> {
              ),
              child: Text('Name'),
              onPressed: () {
-               print('pressed name');
+
              },
            ),
       ElevatedButton(
@@ -31,7 +31,7 @@ class _TestViewState extends State<TestView> {
         ),
         child: Text('phone'),
         onPressed: () {
-          print('pressed phone');
+
         },
       ),
       ElevatedButton(
@@ -41,7 +41,7 @@ class _TestViewState extends State<TestView> {
         ),
         child: Text('Email'),
         onPressed: () {
-          print('pressed Email');
+
         },
       ),
       ],

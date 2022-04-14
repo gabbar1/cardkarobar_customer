@@ -64,8 +64,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
             InkWell(
               onTap: () {
                 _showPicker();
-                print("-------------------------path----------");
-                print(_detailsController.getFilePath.path);
+
               },
               child: Obx(() => _detailsController.getFilePath == null
                   ? _detailsController.getDocumentUrl == null
