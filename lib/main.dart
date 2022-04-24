@@ -100,7 +100,7 @@ class _MyAppState extends State<MyApp> {
       FlutterLocalNotificationsPlugin();*/
 
 
-  var version = "8";
+  var version = "9";
   @override
   void initState() {
     super.initState();

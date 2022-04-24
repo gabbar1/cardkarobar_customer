@@ -124,4 +124,48 @@ class AssignLeadController extends GetxController{
       }
     });
   }
+
+  var rawPrice = 0.obs;
+  int get getRawPrice => rawPrice.value;
+  set setRawPrice(int val){
+    rawPrice.value =val;
+    rawPrice.refresh();
+  }
+  Future<int> productPrice(String productName,bool isRawPrice) async{
+
+    print(productName);
+    if(isRawPrice){
+      try{
+        showLoader();
+        FirebaseFirestore.instance.collection("direct-selling-referral").where("name",isEqualTo: productName).get().then((value) {
+          value.docs.forEach((element) {
+            setRawPrice =   element['rawPrice'];
+          });
+        }).then((value) {
+          closeLoader();
+
+        });
+      }catch(e){
+        throw e;
+      }
+
+    }
+    else{
+      try{
+       // showLoader();
+        FirebaseFirestore.instance.collection("direct-selling-referral").where("name",isEqualTo: productName).get().then((value) {
+          value.docs.forEach((element) async{
+
+            setRawPrice = element['price'];
+          });
+        }).then((value) {
+         // closeLoader();
+        });
+      }catch(e){
+        throw e;
+      }
+
+    }
+
+  }
 }

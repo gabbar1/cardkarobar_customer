@@ -512,8 +512,10 @@ class _StatusUpdateState extends State<StatusUpdate> {
   String appliedBank;
 
   String leadStatus = "--Lead Type--";
-  String leadSerougate = "--Lead Type--";
+  String leadSerougate = "--Customer Type--";
   String existingCreditCard = "--Select Bank--";
+  String selfLead = "Self-Lead";
+  int leadPrice = 0;
   var items;
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -538,6 +540,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
     // TODO: implement initState
     clearText();
     leadBankController.text = widget.appliedBank;
+    leadPrice = widget.referModel.price;
     super.initState();
   }
 
@@ -557,7 +560,8 @@ class _StatusUpdateState extends State<StatusUpdate> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Update Status"),
-        centerTitle: true,
+        centerTitle: false,
+        actions: [Center(child: CommonText(text: "₹ ${leadPrice}")),SizedBox(width: 40,)],
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -663,16 +667,16 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                         // labelText: "Existing Bank",
                                         ),
                                     items: <String>[
-                                      '--Lead Type--',
+                                      '--Customer Type--',
                                       'Salary',
                                       'Business',
                                       'C2C',
                                       'Car',
                                       'Cibil',
                                     ].map((String value) {
-                                      setState(() {
+
                                         leadSerougate = value;
-                                      });
+
                                       return DropdownMenuItem<String>(
                                         onTap: () {
                                           setState(() {
@@ -762,10 +766,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                       "CITY BANK",
                                       "RBL BANK"
                                     ].map((String value) {
-                                      setState(() {
-
                                         cardBank = value;
-                                      });
                                       return DropdownMenuItem<String>(
                                         onTap: () {
                                           setState(() {
@@ -829,6 +830,81 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         SizedBox(
                           height: 10,
                         ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Color(0xff0F1B25),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                const EdgeInsets.only(left: 10, top: 10),
+                                child:
+                                CommonText(text: "Self Lead or Raw Lead"),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.only(left: 10, top: 10),
+                                child: DropdownButtonFormField<String>(
+                                  dropdownColor:
+                                  Constants().appBackGroundColor,
+                                //  value: cardBank,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.zero,
+                                      ),
+                                      enabledBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none
+                                    // labelText: "Existing Bank",
+                                  ),
+                                  items: <String>[
+                                    '--Select Lead Type--',
+                                    'Self-Lead',
+                                    'Raw-Lead',
+                                  ].map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      onTap: () {
+                                        selfLead = value;
+                                         setState(() {
+                                           if(value == "Self-Lead"){
+                                             leadPrice = widget.referModel.price;
+                                           }else{
+                                             leadPrice = widget.referModel.rawPrice;
+                                           }
+                                         });
+                                      },
+                                      value: value,
+                                      child: CommonText(
+                                        text: value,
+                                      ),
+                                    );
+                                  }).toList(),
+                                  validator: (value) {
+                                    print(
+                                        "-----------ValidatedOr not------------");
+                                    print(value);
+                                    if (value == null) {
+                                      return 'Field required';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (val) {},
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         CommonTextInputWithTitle(
                           title: "Comment",
 
@@ -843,7 +919,8 @@ class _StatusUpdateState extends State<StatusUpdate> {
                       ],
                     ),
                   ),
-                ] else if (widget.referModel.type == "Insurance" ) ...[
+                ] else
+                  if (widget.referModel.type == "Insurance" ) ...[
 
                     CommonTextInputWithTitle(
                       textInputType: TextInputType.number,
@@ -909,9 +986,9 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                       'Salary',
                                       'Business',
                                     ].map((String value) {
-                                      setState(() {
+
                                         leadSerougate = value;
-                                      });
+
                                       return DropdownMenuItem<String>(
                                         onTap: () {
                                           setState(() {
@@ -1036,7 +1113,9 @@ class _StatusUpdateState extends State<StatusUpdate> {
                           Get.snackbar("Alert", "Enter Existing Card Bank Name");
                         }
                         else{
+                          widget.referModel.price =leadPrice;
                           LeadModel leadModel = LeadModel(
+                            selfLead: selfLead,
                             status: "submitted",
                             customerEmail: emailController.text,
                             customerName: nameController.text,

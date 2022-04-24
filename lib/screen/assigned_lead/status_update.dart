@@ -288,6 +288,74 @@ class _StatusUpdateState extends State<StatusUpdate> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 10,),
+                 //TODO need to implement change lead Type
+                 /* Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xff0F1B25),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CommonText(text: "Change Lead Type"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField<String>(
+                            focusColor: Colors.white,
+                            dropdownColor: Constants().appBackGroundColor,
+                            decoration: InputDecoration(
+                              focusColor: Constants().appBackGroundColor,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+
+                            ),
+                            items: <String>["Self-Lead","Raw-Lead"].map((String value) {
+
+                              return DropdownMenuItem<String>(
+                                onTap: () async {
+                                  if(value =="Self-Lead"){
+                                    _assignLeadController.productPrice(leadBankController.text,false).then((value) async {
+                                      print( await _assignLeadController.getRawPrice);
+                                      widget.referModel.referralPrice = _assignLeadController.getRawPrice;
+                                    });
+
+                                    existingBanklist = value;
+                                  }else{
+                                    _assignLeadController.productPrice(leadBankController.text,true).then((value)async {
+                                      print(await _assignLeadController.getRawPrice);
+                                      widget.referModel.referralPrice = _assignLeadController.getRawPrice;
+                                    });
+                                    existingBanklist = value;
+
+                                  }
+                                  //
+
+                                },
+                                value: value,
+                                child: CommonText(
+                                    text: value, textColor: Colors.white),
+                              );
+                            }).toList(),
+                            validator: (value) {
+
+                              if (value == null) {
+                                return 'Field required';
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),*/
                   if (widget.referModel.customerLeadType == "Business") ...[
                     CommonTextInputWithTitle(
                         title: "Customer ITR",

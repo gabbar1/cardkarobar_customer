@@ -64,8 +64,9 @@ class _ReferPartnerViewState extends State<ReferPartnerView> {
                           CachedNetworkImage(
 
                             imageUrl:  _PartnerController.getReferList[index].banner,
+
                             imageBuilder: (context, imageProvider) => Container(
-                              width: 100.0,
+                              width: 150.0,
                               height: 100.0,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
@@ -91,7 +92,7 @@ class _ReferPartnerViewState extends State<ReferPartnerView> {
                                 SizedBox(height: 5,),
                                 SizedBox(
                                  // height: 100,
-                                  width: MediaQuery.of(context).size.width/2,
+                                  width: MediaQuery.of(context).size.width/2.5,
                                   child: CommonText(
                                     text:!_PartnerController.getReferList[index].isFixedPrice?
                                     "Refer to your customers and friends, and earn ${_PartnerController.getReferList[index].pricePercentage.toString()} % of total amount":

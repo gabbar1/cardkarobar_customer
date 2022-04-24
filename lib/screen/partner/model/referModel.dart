@@ -1,5 +1,6 @@
 class ReferModel {
   int price;
+  int rawPrice;
   bool isEnabled;
   String name;
   String banner;
@@ -16,6 +17,7 @@ class ReferModel {
 
   ReferModel(
       {this.price,
+      this.rawPrice,
         this.isEnabled,
         this.name,
         this.banner,
@@ -33,6 +35,7 @@ class ReferModel {
 
   ReferModel.fromJson(Map<String, dynamic> json) {
     price = json['price'];
+    rawPrice = json['rawPrice'];
     isEnabled = json['isEnabled'];
     name = json['name'];
     banner = json['banner'];
@@ -77,6 +80,7 @@ class ReferModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['price'] = this.price;
+    data['rawPrice'] = this.rawPrice;
     data['isEnabled'] = this.isEnabled;
     data['name'] = this.name;
     data['banner'] = this.banner;

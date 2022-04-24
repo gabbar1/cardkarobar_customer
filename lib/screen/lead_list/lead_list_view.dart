@@ -3,6 +3,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:upen/commonWidget/commonWidget.dart';
 import 'package:upen/screen/helper/constant.dart';
@@ -133,23 +134,22 @@ TextEditingController _controller = TextEditingController();
                                         SizedBox(
                                           width: MediaQuery.of(context)
                                               .size
-                                              .width /
-                                              4,
-                                          child: Text(
-                                            _PartnerController
-                                                .getLeadList[index]
-                                                .customerName
-                                                .capitalizeFirst,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
+                                              .width /2,
+                                          child: CommonText(text: "${_PartnerController
+                                              .getLeadList[index]
+                                              .customerName.capitalize}  ( ${_PartnerController
+                                              .getLeadList[index].selfLead ==null ? "Self-Lead":_PartnerController
+                                              .getLeadList[index].selfLead} )",
+                                            fontSize: 16,
+                                            fontStyle: FontWeight.bold,
+                                            textColor: Colors.white,
                                           ),
                                         ),
                                         SizedBox(
                                           height: 5,
                                         ),
+                                        CommonText(text:"Lead at : ${DateFormat().format(_PartnerController
+                                            .getLeadList[index].time.toDate())}" ),
                                         Row(
                                           children: [
                                             CommonText(
@@ -157,7 +157,7 @@ TextEditingController _controller = TextEditingController();
                                                     .getLeadList[index]
                                                     .product,
                                                 textColor: Colors.white,
-                                                fontSize: 15),
+                                                fontSize: 12),
                                             _PartnerController
                                                 .getLeadList[index]
                                                 .type==null ?SizedBox():  CommonText(
@@ -198,7 +198,7 @@ TextEditingController _controller = TextEditingController();
                                                   borderRadius:
                                                   BorderRadius.all(
                                                       Radius.circular(5))),
-                                              child: Icon(Icons.phone)),
+                                              child: Icon(Icons.phone,color: Colors.white,)),
                                         ),
                                         SizedBox(height: 5,),
                                         Container(
@@ -218,6 +218,24 @@ TextEditingController _controller = TextEditingController();
                                                 text: _PartnerController
                                                     .getLeadList[index]
                                                     .status)),
+                                        SizedBox(height: 5,),
+                                        Container(
+                                            padding: EdgeInsets.only(
+                                                left: 5,
+                                                right: 5,
+                                                bottom: 5,
+                                                top: 5),
+                                            decoration: BoxDecoration(
+                                                color: Constants()
+                                                    .mainColor
+                                                    .withOpacity(0.7),
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(5))),
+                                            child: CommonText(
+                                                text: "₹ ${_PartnerController
+                                                    .getLeadList[index]
+                                                    .referralPrice.toString()}")),
                                       ],
                                     )
                                   ],
@@ -246,7 +264,10 @@ TextEditingController _controller = TextEditingController();
                                             .getLeadList[
                                         index]
                                             .adminComment ==
-                                            null
+                                            null|| _PartnerController
+                                            .getLeadList[
+                                        index]
+                                            .adminComment.isEmpty
                                             ? "No Comment"
                                             : _PartnerController
                                             .getLeadList[
