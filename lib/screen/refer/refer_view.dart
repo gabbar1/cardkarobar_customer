@@ -6,6 +6,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:upen/commonWidget/commonWidget.dart';
 import 'package:upen/screen/helper/constant.dart';
@@ -14,6 +15,7 @@ import 'package:upen/screen/profile/personalDetails/personalDetailController.dar
 import 'package:upen/screen/refer/refer_controller.dart';
 
 import '../../commonWidget/notification.dart';
+import '../assigned_lead/lead_type.dart';
 
 class ReferView extends StatefulWidget {
   @override
@@ -31,10 +33,11 @@ class _ReferViewState extends State<ReferView> {
 
   //new
   ReferController referController = Get.put(ReferController());
-
+  String leadType = "Today";
   @override
   void initState() {
     // TODO: implement initState
+    leadType = "Today";
     referController.getReferralUserList();
     super.initState();
   }
@@ -50,9 +53,105 @@ class _ReferViewState extends State<ReferView> {
             child: referralList(),))
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Constants().appBackGroundColor,
+        child: SvgPicture.asset("assets/icons/floating.svg"),
+        onPressed: () {
+
+          showModalBottomSheet(
+              backgroundColor: Constants().appBackGroundColor,
+              //isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30)),
+              ),
+              context: context,
+              builder: (builder) {
+                return Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: leadTypePopup());
+              });
+        },
+      ),
     );
   }
+  List<LeadType> leadTypeList = <LeadType>[
+    LeadType(
+      status: true,
+      type: "Today",
+    ),
+    LeadType(
+      status: false,
+      type: "YesterDay",
+    ),
+    LeadType(
+      status: false,
+      type: "This Week",
+    ),
+    LeadType(
+      status: false,
+      type: "Last Week",
+    ),
+    LeadType(
+      status: false,
+      type: "This Month",
+    ),
+    LeadType(
+      status: false,
+      type: "Last Month",
+    ),
+    LeadType(
+      status: false,
+      type: "LifeTime",
+    ),
 
+  ];
+  leadTypePopup() {
+    return ListView.builder(
+        padding: EdgeInsets.only(top: 20),
+        itemCount: leadTypeList.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: (){
+              leadTypeList.forEach((element) {
+                element.status = false;
+              });
+
+              Navigator.pop(context);
+              setState(() {
+                leadType = leadTypeList[index].type;
+                leadTypeList[index].status = !leadTypeList[index].status;
+
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CommonText(text: leadTypeList[index].type),
+                  Checkbox(
+                      activeColor: Constants().mainColor,
+                      value: leadTypeList[index].status,
+                      onChanged: (val) {
+                        leadTypeList.forEach((element) {
+                          element.status = false;
+                        });
+
+                        setState(() {
+                          leadTypeList[index].status = val;
+                          leadType = leadTypeList[index].type;
+
+                        });
+                        Navigator.pop(context);
+                      })
+                ],
+              ),
+            ),
+          );
+        });
+  }
   referralProgram() {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -74,7 +173,7 @@ class _ReferViewState extends State<ReferView> {
               ),
               CommonText(
                   text:
-                      "Refer CardKarobar app to your friends or family and earn extra 10% of their earnings"),
+                      "Refer FinsEarn app to your friends or family and earn extra 10% of their earnings"),
               SizedBox(
                 height: 10,
               ),
@@ -146,8 +245,8 @@ class _ReferViewState extends State<ReferView> {
 
   Future<void> share(String code) async {
     await FlutterShare.share(
-        title: 'CardKarobar',
-        text: 'Refer Cardkarobar to your friend and earn 10% of their income lifetime user code $code',
+        title: 'FinsEarn',
+        text: 'Refer FinsEarn to your friend and earn 10% of their income lifetime user code $code',
         linkUrl: 'https://play.google.com/store/apps/details?id=com.cardkarobar.crm',
         chooserTitle: code
     );
@@ -163,7 +262,7 @@ class _ReferViewState extends State<ReferView> {
           child: CommonText(
             textAlign: TextAlign.center,
             text:
-                "Refer Cardkarobar Nnow to add member in your team and earn more",
+                "Refer FinsEarn Nnow to add member in your team and earn more",
           ),
         ),
       ],
@@ -192,7 +291,13 @@ class _ReferViewState extends State<ReferView> {
             itemCount: referController.getReferralList.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              return Card(
+              return ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                iconColor: Constants().mainColor,
+                onExpansionChanged: (_){
+                  referController.leadUpdate(leadType,int.parse(referController.getReferralList[index].advisorPhoneNumber));
+                },
+                title: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -240,15 +345,18 @@ class _ReferViewState extends State<ReferView> {
                                 crossAxisAlignment:
                                 CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                    referController
-                                        .getReferralList[index]
-                                        .advisorName
-                                        .capitalizeFirst,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width/3,
+                                    child: Text(
+                                      referController
+                                          .getReferralList[index]
+                                          .advisorName
+                                          .capitalizeFirst,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(height: 5,),
@@ -292,7 +400,115 @@ class _ReferViewState extends State<ReferView> {
                       ],
                     ),
                   )
+              ),
+                children: [
+                  Obx(()=>SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      sortAscending: true,
+                      headingRowColor: MaterialStateColor.resolveWith(
+                              (states) => Colors.grey.withOpacity(0.5)),
+                      columns: [
+                        DataColumn(
+                            label: Text(
+                              'Index',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        DataColumn(
+                            label: Text(
+                              'Application No',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        DataColumn(
+                            label: Text(
+                              'Customer Name',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        DataColumn(
+                            label: Text(
+                              'CustomerPhone',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        DataColumn(
+                            label: Text(
+                              'Type',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        DataColumn(
+                            label: Text(
+                              'Status',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        DataColumn(
+                            label: Text(
+                              'Product',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+
+                        DataColumn(
+                            label: Text(
+                              'Lead Date',
+                              style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                            )),
+                        //DataColumn(label: Text('Assign To')),
+                      ],
+                      rows: List.generate(
+                          referController.getLeadUpdateList.length, (childIndex) {
+                        return DataRow(
+                            cells: [
+                              DataCell(
+                                Text( referController.getLeadUpdateList.length ==
+                                    0
+                                    ? "0"
+                                    : (childIndex+1).toString(),
+                                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                              ),
+                              DataCell(
+                                Text( referController.getLeadUpdateList[childIndex].applicationNumber ==
+                                    null
+                                    ? " "
+                                    : referController.getLeadUpdateList[childIndex].applicationNumber,
+                                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                              ),
+                              DataCell(
+                                Text(referController.getLeadUpdateList[childIndex].customerName ==
+                                    null
+                                    ? "No Name"
+                                    : referController.getLeadUpdateList[childIndex].customerName,
+                                    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                              ),
+                              DataCell(Text(referController.getLeadUpdateList[childIndex].customerPhone
+                                  .toString() ==
+                                  null
+                                  ? "No Phone "
+                                  : referController.getLeadUpdateList[childIndex].customerPhone
+                                  .toString(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                        ),
+                              DataCell(Text(referController.getLeadUpdateList[childIndex].type ==
+                                  null
+                                  ? "Product Type"
+                                  : referController.getLeadUpdateList[childIndex].type,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white))),
+                              DataCell(Text(referController.getLeadUpdateList[childIndex].status ==
+                                  null
+                                  ? "No Status"
+                                  : referController.getLeadUpdateList[childIndex].status,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white))),
+                              DataCell(Text(referController.getLeadUpdateList[childIndex]
+                                  .product ==
+                                  null
+                                  ? "No Product"
+                                  : referController.getLeadUpdateList[childIndex].product,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white))),
+                              DataCell(Text(referController.getLeadUpdateList[childIndex]
+                                  .time.toString() ==
+                                  null
+                                  ? "No Time"
+                                  : DateFormat().format(referController.getLeadUpdateList[childIndex].time.toDate()).toString(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white))),
+                            ]);
+                      }),
+                    ),
+                  ))
+                ],
               );
+
             })),
       ),
     );

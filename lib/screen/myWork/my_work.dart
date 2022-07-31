@@ -145,11 +145,6 @@ class _MyWorkState extends State<MyWork> {
                                             ],
                                           ),
 
-                                          /* CommonText(
-                                              text:
-                                              "${_myWorkController.getContacts[index].comment}",
-                                              textColor: Colors.black,
-                                              fontSize: 10),*/
                                         ],
                                       ),
                                     ),
@@ -243,11 +238,6 @@ class _MyWorkState extends State<MyWork> {
                                             ],
                                           ),
 
-                                          /* CommonText(
-                                              text:
-                                              "${_myWorkController.getHistoryLeadList[index].comment}",
-                                              textColor: Colors.black,
-                                              fontSize: 10),*/
                                         ],
                                       ),
                                     ),
@@ -286,10 +276,6 @@ class _MyWorkState extends State<MyWork> {
                     Get.to(StatusUpdate(
                       isNewEntry: true,
                     ));
-                    /*   _commonBottomSheet.bottomSheet(
-                    context: Get.context,
-                    title: "Assign Phone Numbers",
-                    content: userList(_myWorkController.getUsersList));*/
                   },
                   child: Icon(Icons.add),
                   backgroundColor: Constants().mainColor,
@@ -342,11 +328,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
         _myWorkController.businessController.text = widget.userContactModel.itr;
         _myWorkController.commentController.text =
             widget.userContactModel.comment;
-        print(
-            "-------------------------------------LeadType-------------------");
 
-        print(widget.userContactModel.leadResult);
-        print(widget.userContactModel.leadType);
         if (widget.userContactModel.leadResult == "StatusCharacter.a") {
           _character = StatusCharacter.a;
           leadStatus = 'Interested';
@@ -382,8 +364,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
           _leadType = LeadCharacter.b;
           leadSerougate = 'Cibil';
         }
-        print("==============widget.userContactModel.existingBank===========");
-        print(widget.userContactModel.existingBank);
+
         cardBank = widget.userContactModel.existingBank;
         appliedBank = widget.userContactModel.appliedBank;
       }
@@ -538,8 +519,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                           );
                         }).toList(),
                         validator: (value) {
-                          print("-----------ValidatedOr not------------");
-                          print(value);
+
                           if (value == null) {
                             return 'Field required';
                           }
@@ -620,8 +600,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                             );
                           }).toList(),
                           validator: (value) {
-                            print("-----------ValidatedOr not------------");
-                            print(value);
+
                             if (value == null) {
                               return 'Field required';
                             }
@@ -670,8 +649,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                       );
                     }).toList(),
                     validator: (value) {
-                      print("-----------ValidatedOr not------------");
-                      print(value);
+
                       if (value == null) {
                         return 'Field required';
                       }
@@ -741,8 +719,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                       );
                     }).toList(),
                     validator: (value) {
-                      print("-----------ValidatedOr not------------");
-                      print(value);
+
                       if (value == null) {
                         return 'Field required';
                       }
@@ -913,8 +890,7 @@ class _AssignLeadState extends State<AssignLead> {
                             _myWorkController.contacCategoryList.value.clear();
                             _myWorkController.contacCategoryList.refresh();
                             setState(() {
-                              print("-------------------");
-                              print(_searchByValue);
+
                               _searchByValue = value;
                             });
                           },
@@ -996,9 +972,7 @@ class _AssignLeadState extends State<AssignLead> {
                                       );
                                     }).toList(),
                                     onChanged: (val) {
-                                      print(
-                                          "---------------value----------------");
-                                      print(val);
+
                                       _myWorkController.setSelectedVersion(val);
                                     },
                                   )),
@@ -1087,10 +1061,7 @@ class _AssignLeadState extends State<AssignLead> {
                                 ),
                               ),
                               onChanged: (val) {
-                                print(userList.length);
-                                print(val);
-                                /* _myWorkController.getUsersList.where((element) => element.name.contains(val));
-                                _myWorkController.userList.refresh();*/
+
 
                                 setState(() {
                                   userList.where(

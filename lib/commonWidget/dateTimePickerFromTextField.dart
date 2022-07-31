@@ -57,9 +57,6 @@ class _DatePickerState extends State<DatePicker> {
           fillColor: Colors.white,
           focusColor: Colors.white,
           border: OutlineInputBorder(),
-          /* prefixIcon: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Icon(Icons.otp)),*/
         ),
           onTap: () async {
             var date =  await showDatePicker(
@@ -79,7 +76,7 @@ class _DatePickerState extends State<DatePicker> {
                 lastDate: DateTime(2100));
             widget.dateController.text = date.toString().substring(0,10);
             setState(() {
-                       //  print(customerVerificationController.odbController.text);
+
             });
 
           },),

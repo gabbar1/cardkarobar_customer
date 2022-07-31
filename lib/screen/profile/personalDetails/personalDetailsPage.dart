@@ -109,9 +109,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       fillColor: Colors.white,
                       focusColor: Colors.white,
                       border: OutlineInputBorder(),
-                      /* prefixIcon: Padding(
-                                    padding: EdgeInsets.all(15),
-                                    child: Icon(Icons.otp)),*/
+
                     ),
                     onTap: () async {
                       var date = await showDatePicker(

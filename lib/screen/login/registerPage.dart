@@ -69,9 +69,7 @@ class RegsiterView extends StatelessWidget {
                     fillColor: Colors.white,
                     focusColor: Colors.white,
                     border: OutlineInputBorder(),
-                    /* prefixIcon: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Icon(Icons.otp)),*/
+
                   ),
                 ),
               ),
@@ -113,28 +111,14 @@ class RegsiterView extends StatelessWidget {
                     fillColor: Colors.white,
                     focusColor: Colors.white,
                     border: OutlineInputBorder(),
-                    /* prefixIcon: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Icon(Icons.otp)),*/
+
                   ),
                 ),
               ),
               const SizedBox(
                 height: 15,
               ),
-              Text(
-                "Date of Birth",
-                style: TextStyle(
-                  color: Constants().textColor,
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              CommanDateTimePicker(labelText: "Date of Birth"),
-              const SizedBox(
-                height: 15,
-              ),
+
               Text(
                 "Referal Code",
                 style: TextStyle(
@@ -170,12 +154,24 @@ class RegsiterView extends StatelessWidget {
                     fillColor: Colors.white,
                     focusColor: Colors.white,
                     border: OutlineInputBorder(),
-                    /* prefixIcon: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Icon(Icons.otp)),*/
+
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                "Date of Birth",
+                style: TextStyle(
+                  color: Constants().textColor,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              CommanDateTimePicker(labelText: "Date of Birth"),
+
               const SizedBox(
                 height: 15,
               ),

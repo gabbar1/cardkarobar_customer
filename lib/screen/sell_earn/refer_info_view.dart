@@ -8,6 +8,8 @@ import 'package:html/parser.dart';
 import 'package:share/share.dart';
 import 'package:upen/commonWidget/commonWidget.dart';
 import 'package:upen/screen/helper/constant.dart';
+import 'package:upen/screen/sell_earn/web_lead_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../myWork/controller/my_work_controller.dart';
@@ -18,7 +20,8 @@ import 'customer_details.dart';
 import '../partner/model/leadModel.dart';
 import '../partner/model/referModel.dart';
 import 'package:flutter_html/flutter_html.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart' as wh;
 class ReferInfoView extends StatefulWidget {
   ReferModel referModel;
 
@@ -34,13 +37,12 @@ class _ReferInfoViewState extends State<ReferInfoView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  List<String> productInstructionList = <String>[
-    "Info",
-    "Description",
-    "How to Earn",
-  ];
+  List<String> productInstructionList = <String>["Info", "Description", "How to Earn",];
   YoutubePlayerController _controller;
-
+  WebViewController controller ;
+  bool isShow = false;
+  String name,email,pinCode,phone;
+  bool isShowVideo =true;
   @override
   void initState() {
     // TODO: implement initState
@@ -49,7 +51,6 @@ class _ReferInfoViewState extends State<ReferInfoView> {
     phoneController.clear();
     _partnerController.referralInfo(widget.referModel.key);
     _partnerController.setCategoryIndex(0);
-
     _controller = YoutubePlayerController(
       initialVideoId: widget.referModel.youtube,
       flags: YoutubePlayerFlags(
@@ -69,12 +70,14 @@ class _ReferInfoViewState extends State<ReferInfoView> {
 
   @override
   Widget build(BuildContext context) {
-
+    print("=====================back=============");
+    print(widget.referModel.url);
     return Scaffold(
       appBar: AppBar(
         title: CommonText(text: widget.referModel.name),
       ),
-      body: Column(
+     body:
+       Column(
         children: [
           SizedBox(
             height: 10,
@@ -122,8 +125,6 @@ class _ReferInfoViewState extends State<ReferInfoView> {
               return knowMore();
             } else if (_partnerController.getCategoryIndex == 2) {
               return howToEarn();
-            } else {
-              return faq();
             }
           }))
         ],
@@ -135,12 +136,6 @@ class _ReferInfoViewState extends State<ReferInfoView> {
                 padding: const EdgeInsets.only(left: 20),
                 child: InkWell(
                   onTap: () {
-                    /* final RenderBox box = Get.context.findRenderObject();
-              widget.referModel.name;
-              widget.referModel.price;
-              var referralID =FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "");
-              Share.share("https://cardkarobar.in/referal.html?id=$referralID&product=${widget.referModel.name}&price=${widget.referModel.price}", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-*/
 
                     Get.to(StatusUpdate(
                       appliedBank: widget.referModel.name,
@@ -168,7 +163,39 @@ class _ReferInfoViewState extends State<ReferInfoView> {
                 ),
               ),
             )
-          : Row(
+          :  widget.referModel.url.contains("banksathi") ?Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: InkWell(
+            onTap: () {
+              Get.to(WebLeadView(
+                appliedBank: widget.referModel.name,
+                referModel: widget.referModel,
+              ));
+            },
+            child: Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width / 2,
+                //width: 300,
+                decoration: const BoxDecoration(
+                    color: Color(0xffFFFFFF),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5.0),
+                    )),
+                child: Center(
+                  child: Text(
+                    "Add Lead",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
+                  ),
+                )),
+          ),
+        ),
+      ):
+      Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
@@ -305,6 +332,7 @@ class _ReferInfoViewState extends State<ReferInfoView> {
                                                       isLeadClosed: false,
                                                       type: widget.referModel.type,
                                                       time: Timestamp.now(),
+                                                          mode: "self"
                                                     );
                                                     _partnerController
                                                         .submitReferral(
@@ -350,87 +378,38 @@ class _ReferInfoViewState extends State<ReferInfoView> {
   }
 
   Widget about() {
-
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          widget.referModel.youtube =="empty" ? SizedBox():Padding(
-            padding: const EdgeInsets.only(left: 10, top: 10),
-            child:
-                CommonText(text: "Watch video for steps to sell", fontSize: 20),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          widget.referModel.youtube =="empty" ? SizedBox():
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: YoutubePlayer(
-              controller: _controller,
-              showVideoProgressIndicator: true,
-              onReady: () {},
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          ListView.builder(
-            padding: EdgeInsets.only(bottom: 100),
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: _partnerController.getAboutList.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    color: Color(0xFF0F1B25),
-                    child: Container(
-                      padding: EdgeInsets.only(left: 20, right: 20, bottom: 0),
-                      child: Html(
-                        data: _partnerController.getAboutList[index].html,
-                        style: {
-                          "body": Style(
-                            margin: EdgeInsets.zero,
-                            padding: EdgeInsets.zero,
-                          )
-                        },
-                      ),
-                    ),
+      child: ListView.builder(
+          padding: EdgeInsets.only(bottom: 100),
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: _partnerController.getAboutList.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                color: Color(0xFF0F1B25),
+                child: Container(
+                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 0),
+                  child: Html(
+                    data: _partnerController.getAboutList[index].html,
+                    style: {
+                      "body": Style(
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsets.zero,
+                      )
+                    },
                   ),
-                );
-              }),
-        ],
-      ),
+                ),
+              ),
+            );
+          }),
     );
   }
 
-  Widget faq() {
-    return ListView.builder(
-        padding: EdgeInsets.only(bottom: 100),
-        shrinkWrap: true,
-        itemCount: _partnerController.getFaqList.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 0),
-              child: Html(
-                data: _partnerController.getFaqList[index].html,
-                style: {
-                  "body": Style(
-                    margin: EdgeInsets.zero,
-                    padding: EdgeInsets.zero,
-                  )
-                },
-              ),
-            ),
-          );
-        });
-  }
 
   Widget howToEarn() {
     return ListView.builder(
@@ -517,6 +496,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
   String selfLead = "Self-Lead";
   int leadPrice = 0;
   var items;
+  PersonalDetailsController _personalDetailsController = Get.find();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -526,10 +506,8 @@ class _StatusUpdateState extends State<StatusUpdate> {
   TextEditingController businessController = TextEditingController();
   TextEditingController c2cController = TextEditingController();
   TextEditingController commentController = TextEditingController();
-
   TextEditingController isFixedPriceController = TextEditingController();
   TextEditingController leadBankController = TextEditingController();
-
   String get pricePercentage => widget.referModel.pricePercentage;
   int get price => widget.referModel.price;
   //var isFixedPrice = "".obs;
@@ -626,8 +604,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                 SizedBox(
                   height: 10,
                 ),
-
-                if (widget.referModel.type == "Credit Card") ...[
+                if (widget.referModel.type == "Credit-Card") ...[
                   Container(
                     child: Column(
                       children: [
@@ -782,9 +759,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                       );
                                     }).toList(),
                                     validator: (value) {
-                                      print(
-                                          "-----------ValidatedOr not------------");
-                                      print(value);
+
                                       if (value == null) {
                                         return 'Field required';
                                       }
@@ -921,8 +896,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                   ),
                 ] else
                   if (widget.referModel.type == "Insurance" ) ...[
-
-                    CommonTextInputWithTitle(
+                  CommonTextInputWithTitle(
                       textInputType: TextInputType.number,
                       isReadOnly: false,
                       title:"Enter Insurance Amount",
@@ -1069,7 +1043,6 @@ class _StatusUpdateState extends State<StatusUpdate> {
                       ],
                     ),
                   ),
-
                 ],
                 CommonButton(
                     buttonText: "Submit",
@@ -1077,8 +1050,8 @@ class _StatusUpdateState extends State<StatusUpdate> {
                     buttonColor: Constants().mainColor,
                     onPressed: () {
                       // nameController
-
-                      if (widget.referModel.type == "Credit Card"){
+                      _personalDetailsController.getTelecallers("creditCard");
+                      if (widget.referModel.type == "Credit-Card"){
                         if (nameController.text.isEmpty) {
                           Get.snackbar("Alert", "Name should not be Empty");
                         }
@@ -1114,30 +1087,65 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         }
                         else{
                           widget.referModel.price =leadPrice;
-                          LeadModel leadModel = LeadModel(
-                            selfLead: selfLead,
-                            status: "submitted",
-                            customerEmail: emailController.text,
-                            customerName: nameController.text,
-                            customerPhone: int.parse(phoneController.text),
-                            product: widget.referModel.name,
-                            referralId: int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")),
-                            referralPrice: widget.referModel.price,
-                            comment: commentController.text,
-                            customerCardLimit: existingCreditCard +"\n"+c2cController.text,
-                            customerCity: cityController.text,
-                            customerItr: businessController.text,
-                            customerLeadType: leadStatus,
-                            customerSalary: salaryController.text,
-                            customerState: stateController.text,
-                            type: widget.referModel.type,
-                            isFixedPrice: widget.referModel.isFixedPrice,
-                            isLeadClosed: false,
-                            time: Timestamp.now(),
+                          if(_personalDetailsController.getIsEnable==true){
+                            LeadModel leadModel = LeadModel(
+                                selfLead: selfLead,
+                                status: "UnderProcess",
+                                customerEmail: emailController.text,
+                                customerName: nameController.text,
+                                customerPhone: int.parse(phoneController.text),
+                                product: widget.referModel.name,
+                                referralId: int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")),
+                                referralPrice: 0,
+                                comment: commentController.text,
+                                customerCardLimit: existingCreditCard +"\n"+c2cController.text,
+                                customerCity: cityController.text,
+                                customerItr: businessController.text,
+                                customerLeadType: leadStatus,
+                                customerSalary: salaryController.text,
+                                customerState: stateController.text,
+                                type: widget.referModel.type,
+                                isFixedPrice: widget.referModel.isFixedPrice,
+                                isLeadClosed: false,
+                                time: Timestamp.now(),
+                                isEnabled: _personalDetailsController.getIsEnable,
+                                assignedTo: FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", ""),
+                                mode: "static"
 
-                          );
-                          _partnerController.submitReferral(
-                              leadModel, widget.referModel.url);
+                            );
+                            _partnerController.submitReferral(
+                                leadModel, widget.referModel.url);
+                          }else{
+                            LeadModel leadModel = LeadModel(
+                                selfLead: selfLead,
+                                status: "submitted",
+                                customerEmail: emailController.text,
+                                customerName: nameController.text,
+                                customerPhone: int.parse(phoneController.text),
+                                product: widget.referModel.name,
+                                referralId: int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")),
+                                referralPrice: widget.referModel.price,
+                                comment: commentController.text,
+                                customerCardLimit: existingCreditCard +"\n"+c2cController.text,
+                                customerCity: cityController.text,
+                                customerItr: businessController.text,
+                                customerLeadType: leadStatus,
+                                customerSalary: salaryController.text,
+                                customerState: stateController.text,
+                                type: widget.referModel.type,
+                                isFixedPrice: widget.referModel.isFixedPrice,
+                                isLeadClosed: false,
+                                time: Timestamp.now(),
+                                isEnabled: _personalDetailsController.getIsEnable,
+                                mode: "static"
+
+                            );
+                            _partnerController.submitReferral(
+                                leadModel, widget.referModel.url);
+                          }
+
+
+
                         }
 
                         }
@@ -1202,7 +1210,9 @@ class _StatusUpdateState extends State<StatusUpdate> {
                             desireAmount: isFixedPriceController.text,
                             percentage: widget.referModel.pricePercentage,
                             isLeadClosed: false,
+                            isEnabled: _personalDetailsController.getIsEnable,
                             time: Timestamp.now(),
+                            mode: "static"
                           );
                           _partnerController.submitReferral(
                               leadModel, widget.referModel.url);
@@ -1255,8 +1265,10 @@ class _StatusUpdateState extends State<StatusUpdate> {
                             percentage: widget.referModel.pricePercentage,
                             desireAmount: isFixedPriceController.text,
                             isFixedPrice: widget.referModel.isFixedPrice,
+                            isEnabled: _personalDetailsController.getIsEnable,
                             isLeadClosed: false,
                             time: Timestamp.now(),
+                            mode: "static"
                           );
                           _partnerController.submitReferral(
                               leadModel, widget.referModel.url);

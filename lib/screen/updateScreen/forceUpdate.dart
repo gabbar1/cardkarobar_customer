@@ -43,7 +43,7 @@ class ForceUpdateView extends StatelessWidget {
                   CommonText(
                    text: (maintenance == "0")
                         ? "We have added lots of new features and improved our existing app to make your experience better and smooth as possible."
-                        : "We appreciate your patience for our maintenance work. We will be back soon.\nRegards,\Cardkarobar Team.",
+                        : "We appreciate your patience for our maintenance work. We will be back soon.\nRegards,\FinsEarn Team.",
                     textAlign: TextAlign.center,
                     fontSize: 15
                   ),

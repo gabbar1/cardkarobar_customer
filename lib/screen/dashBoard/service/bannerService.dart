@@ -10,13 +10,13 @@ class BannerService {
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) {
 
-          // print(element.data());
+
           Map<String, dynamic> bannerList = element.data();
           BannerModel bannerModel = BannerModel.fromJson(bannerList);
-         // print(bannerModel.url);
+
           return bannerModel;
         });
-        // print(banners);
+
       });
     } catch (exception) {
       throw exception;

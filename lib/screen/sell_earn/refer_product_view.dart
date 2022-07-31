@@ -27,8 +27,6 @@ class _ReferPartnerViewState extends State<ReferPartnerView> {
   @override
   Widget build(BuildContext context) {
 
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Partners"),
@@ -55,7 +53,7 @@ class _ReferPartnerViewState extends State<ReferPartnerView> {
                       color: Color(0xFF0F1B25),
                       child: Padding(
                         padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 20, bottom: 20),
+                            left: 0, right: 20, top: 20, bottom: 20),
                         child: Row(
                          // crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -66,16 +64,16 @@ class _ReferPartnerViewState extends State<ReferPartnerView> {
                             imageUrl:  _PartnerController.getReferList[index].banner,
 
                             imageBuilder: (context, imageProvider) => Container(
-                              width: 150.0,
+                              width: 100.0,
                               height: 100.0,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 shape: BoxShape.rectangle,
                                 image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.fill),
+                                    image: imageProvider, fit: BoxFit.contain),
                               ),
                             ),
-                            placeholder: (context, url) => Container(child: CircularProgressIndicator()),
+                            placeholder: (context, url) => Container(child: CircularProgressIndicator(color: Constants().mainColor,)),
                             errorWidget: (context, url, error) => SvgPicture.asset("assets/icons/profile.svg",color: Constants().mainColor,),
                           ),
                           SizedBox(width: 20,),
@@ -103,36 +101,6 @@ class _ReferPartnerViewState extends State<ReferPartnerView> {
                             ),
                           )
                         ],),
-                      ),
-                    ),
-                  );
-                  return InkWell(
-                    onTap: () {
-                      Get.to(ReferInfoView(referModel: _PartnerController.getReferList[index],));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: CachedNetworkImage(
-                              height: MediaQuery.of(context).size.height/5,
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.fill,
-                                imageUrl:
-                                    _PartnerController.getReferList[index].banner),
-                          ),
-                          Positioned(
-                              right: 20,
-                              top: 20,
-                              child: CommonText(
-                                  text: "Earn " +
-                                      _PartnerController.getReferList[index].price
-                                          .toString(),
-                                  fontStyle: FontWeight.w500,
-                                  fontSize: 18))
-                        ],
                       ),
                     ),
                   );

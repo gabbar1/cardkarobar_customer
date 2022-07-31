@@ -38,15 +38,9 @@ Widget CommonText(
   textStyle: Theme.of(Get.context).textTheme.headline4,
   fontSize: fontSize,
   fontWeight: fontStyle,
- // fontStyle: FontStyle.italic,
   color: textColor,
   ));
 
-       // TextStyle(fontSize: fontSize, color: textColor, fontWeight: fontStyle,fontFamily: 'Cambria'),
-        /*TextStyle(fontSize: fontSize, color: textColor, fontWeight: fontStyle),*/
-   // textAlign: TextAlign.center,
-
- // );
 }
 
 Widget CommanDateTimePicker({
@@ -125,9 +119,6 @@ Widget CommonTextInput1(
               color: Colors.white38
           )
 
-        /* prefixIcon: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Icon(Icons.otp)),*/
       ),
       validator: (value) {
         if (value.toString().isEmpty) {
@@ -218,9 +209,6 @@ Widget CommonTextInputWithTitle(
                   color: Colors.white38
               )
 
-            /* prefixIcon: Padding(
-                                padding: EdgeInsets.all(15),
-                                child: Icon(Icons.otp)),*/
           ),
           validator: (value) {
             if (value.toString().isEmpty) {
@@ -319,14 +307,6 @@ Widget CommonTextInput(
               ),
               fillColor: Colors.white,
               focusColor: Colors.white,
-              // border: OutlineInputBorder(),
-              /*prefixIcon: Padding(
-                padding: EdgeInsets.all(1),
-                child:
-                    Text("",
-                  style: TextStyle(color: Colors.white54),
-                ),
-              ),*/
             ),
             validator: (value) {
               if (value.toString().isEmpty) {
@@ -399,7 +379,7 @@ class CommonDatePicker extends GetxController {
 
               if (picked != null && picked != selectedStartDate) {
                 selectedStartDate = picked;
-                print(selectedStartDate);
+
               }
 
               // strStartDate = formatter.format(selectedStartDate);
@@ -558,12 +538,6 @@ ImageNetworkTap(
         height: height,
         fit: fit),
 
-    /*Image.network(
-      imagePathAPI,
-      width: width,
-      height: height,
-      fit: fit,
-    ),*/
   );
 }
 

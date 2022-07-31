@@ -83,43 +83,7 @@ class DashBoardController extends GetxController{
     isRecall.refresh();
   }
 
-  /*Future<void> removeZero()async{
-    try {
 
-      FirebaseFirestore.instance
-          .collection("contactData").where("version",isEqualTo: "policy_guj").where("mobile",isGreaterThanOrEqualTo: ".0")
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-
-
-        querySnapshot.docs.forEach((element) {
-          UserContactModel userContactModel = UserContactModel.fromJson(element.data());
-          print("===================querySnapshot00000000000000000000000========================");
-        //  print(jsonEncode(userContactModel));
-          userContactModel.key = element.id;
-          print(userContactModel.key);
-          if(userContactModel.mobile.contains(".0")){
-            print(userContactModel.mobile);
-            userContactModel.mobile.replaceAll(".0", "");
-            print(userContactModel.mobile.replaceAll(".0", ""));
-            FirebaseFirestore.instance.collection("contactData").doc(userContactModel.key).update({
-              "mobile":userContactModel.mobile.replaceAll(".0", ""),
-              "name":userContactModel.name,
-              "email":userContactModel.email,
-              "city":userContactModel.city,
-              "state":userContactModel.state,
-              "status":false,
-              "version":"policy_guj"
-             });
-          }else{
-            Get.snackbar("Not", "found");
-          }
-        });
-      });
-    } catch (exception) {
-      throw exception;
-    }
-  }*/
 
   setProductList(ProductModel val){
     productList.value.add(val);
@@ -186,9 +150,7 @@ class DashBoardController extends GetxController{
 
   sendMail(String email,amount) async{
     try {
-      print("===============email============");
-      print(email);
-      print(amount);
+
       final smtpServer =  cardkarobarMail("hr@cardkarobar.in","Card@12911");
       final message = Message()
         ..from = Address("info@cardkarobar.in")
@@ -196,12 +158,9 @@ class DashBoardController extends GetxController{
         ..subject =
             "Payment Request of Rupees ${amount} on : ${DateTime.now()}"
         ..html =
-            "<h3>THANK YOU FOR CHOOSING CardKarobar \n\n Your Payment would be processed soon</h3>";
+            "<h3>THANK YOU FOR CHOOSING FinsEarn \n\n Your Payment would be processed soon</h3>";
       final sendReport = await send(message, smtpServer);
-      print(sendReport.mail.toString());
-      print(sendReport.connectionOpened.toString());
-      print(sendReport.messageSendingEnd.toString());
-      print(sendReport.messageSendingStart.toString());
+
     }catch(e){
       Get.snackbar("Error", e.toString());
     }

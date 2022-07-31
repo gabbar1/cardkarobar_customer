@@ -88,9 +88,7 @@ class LoginView extends StatelessWidget {
                             fillColor: Colors.white,
                             focusColor: Colors.white,
                             border: OutlineInputBorder(),
-                            /* prefixIcon: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Icon(Icons.otp)),*/
+
                           ),
                         ),
                       ),

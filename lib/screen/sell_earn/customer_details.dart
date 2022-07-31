@@ -8,20 +8,18 @@ import 'package:upen/screen/helper/constant.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../partner/controller/partner_controller.dart';
 import '../partner/model/leadModel.dart';
+import '../profile/personalDetails/personalDetailController.dart';
 
 class ReferCustomerDetail extends StatelessWidget {
-
 
   PartnerController _referController = Get.put(PartnerController());
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  PersonalDetailsController _personalDetailsController = Get.find();
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Partners"),
@@ -42,13 +40,7 @@ class ReferCustomerDetail extends StatelessWidget {
                   nameController.clear();
                   emailController.clear();
                   phoneController.clear();
-                  YoutubePlayerController _controller = YoutubePlayerController(
-                    initialVideoId:_referController.getReferList[index].youtube,
-                    flags: YoutubePlayerFlags(
-                      autoPlay: true,
-                      mute: false,
-                    ),
-                  );
+
                   CommonBottomSheet().bottomSheet(
                       context: Get.context, title: "User Information",
                       content: Padding(
@@ -77,6 +69,7 @@ class ReferCustomerDetail extends StatelessWidget {
                                       referralId: int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")),
                                       referralPrice: _referController.getReferList[index].price,
                                       time: Timestamp.now(),
+                                      isEnabled: _personalDetailsController.getIsEnable
                                     );
                                     _referController.submitReferral(leadModel,_referController.getReferList[index].url);
                                   }

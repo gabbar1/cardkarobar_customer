@@ -93,11 +93,11 @@ TextEditingController _controller = TextEditingController();
                 enablePullUp: true,
                 controller: _refreshController,
                 onRefresh: () {
-                  print("-------------checkRefresh");
+
                   _PartnerController.myRefreshLeads();
                 },
                 onLoading: () {
-                  print("-------------checkLoading");
+
                   _PartnerController.myRefreshLeads().then((value) {
                     _refreshController.loadComplete();
                   });

@@ -33,36 +33,41 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
         child: ListView(
           children: [
             Obx(() => CommonTextInput(
+              isReadOnly: _detailsController.getIsVerified,
                 inputController: _detailsController.getBankNameController,
                 textInputAction: TextInputAction.next,
                 labeltext: "Bank Name",
                 hint: "Enter Bank Name")),
             Obx(() => CommonTextInput(
+                isReadOnly: _detailsController.getIsVerified,
                 inputController: _detailsController.getNameController,
                 textInputAction: TextInputAction.next,
                 labeltext: "Name as per bank record",
                 hint: "Enter Your Name")),
             Obx(() => CommonTextInput(
+                isReadOnly: _detailsController.getIsVerified,
                 inputController: _detailsController.getAccountNumberController,
                 textInputAction: TextInputAction.next,
                 labeltext: "Account Number",
                 textInputType: TextInputType.phone,
                 hint: "Enter Account Number")),
             Obx(() => CommonTextInput(
+                isReadOnly: _detailsController.getIsVerified,
                 inputController: _detailsController.getIFSCController,
                 textInputAction: TextInputAction.next,
                 labeltext: "IFSC Code",
                 hint: "Enter IFSC Code")),
-            Padding(
-              padding: const EdgeInsets.only(left: 5, top: 20),
-              child: CommonText(
-                  text: "Upload cancelled cheque or passbook", fontSize: 18),
-            ),
+            Obx(()=>!_detailsController.getIsVerified?  Padding(
+    padding: const EdgeInsets.only(left: 5, top: 20),
+    child: CommonText(
+    text: "Upload cancelled cheque or passbook", fontSize: 18),
+    ):SizedBox()),
             SizedBox(
               height: 20,
             ),
             InkWell(
               onTap: () {
+                if(!_detailsController.getIsVerified)
                 _showPicker();
 
               },
@@ -115,36 +120,35 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
             SizedBox(
               height: 25,
             ),
+            Obx(()=>!_detailsController.getIsVerified?
             CommonButton(
               onPressed: () {
-                print(_detailsController.getFilePath.toString());
+
                 if (_detailsController.getFilePath != "") {
-                  print(
-                      "============_detailsController.getFilePath============;");
+
                   _detailsController.uploadFile(_detailsController.getFilePath);
                 } else {
                   UserBankDetailModel userBankDetailModel = UserBankDetailModel(
                       bankName: _detailsController.getBankNameController.text,
                       accHolderName: _detailsController.getNameController.text,
                       accHolderNumber:
-                          _detailsController.getAccountNumberController.text,
+                      _detailsController.getAccountNumberController.text,
                       accHolderIfsc: _detailsController.getIFSCController.text,
                       accHolderDocType:
-                          _detailsController.getDocTypeController.text,
+                      _detailsController.getDocTypeController.text,
                       accHolderDocUrl: _detailsController.getDocumentUrl,
                       docVerification: false);
                   FirebaseFirestore.instance
                       .collection("user_details")
                       .doc(FirebaseAuth.instance.currentUser.phoneNumber
-                          .replaceAll("+91", ""))
+                      .replaceAll("+91", ""))
                       .collection("bank_details")
                       .doc("bank_details")
                       .set(userBankDetailModel.toJson())
                       .then((value) {
                     closeLoader();
                     Navigator.of(Get.context).pop();
-                    Get.snackbar("Done", "Thank you for updating profile",
-                        backgroundColor: Constants().mainColor);
+                    Get.snackbar("Done", "Thank you for updating profile", backgroundColor: Constants().mainColor);
                   }).onError((error, stackTrace) {
                     closeLoader();
                     Get.snackbar("Error", error.toString(),
@@ -155,7 +159,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
               buttonText: "Submit",
               buttonColor: Constants().mainColor,
               vPadding: 15.0,
-            ),
+            ):SizedBox()),
           ],
         ),
       ),
@@ -198,7 +202,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     if (pickedFile != null) {
       displayImageOptions(pickedFile.path);
     } else {
-      print('No image selected.');
+
     }
   }
 
@@ -208,7 +212,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     if (pickedFile != null) {
       displayImageOptions(pickedFile.path);
     } else {
-      print('No image selected.');
+
     }
   }
 

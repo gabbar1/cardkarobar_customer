@@ -32,11 +32,11 @@ Future<void> sendNotification({String token, title, message}) async{
 
   if (response.statusCode == 200) {
 // on success do
-    print("true");
+
 
   } else {
 // on failure do
-    print("false");
+
 
   }
 }

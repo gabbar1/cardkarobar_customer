@@ -7,6 +7,7 @@ import 'package:upen/screen/partner/model/leadModel.dart';
 import 'package:upen/screen/partner/model/referModel.dart';
 import '../../commonWidget/loader.dart';
 import '../profile/personalDetails/personalDetailModel.dart';
+import 'model/raw_model.dart';
 
 class AssignLeadController extends GetxController{
 
@@ -125,46 +126,26 @@ class AssignLeadController extends GetxController{
     });
   }
 
-  var rawPrice = 0.obs;
-  int get getRawPrice => rawPrice.value;
-  set setRawPrice(int val){
+  var rawPrice = RawModel().obs;
+  RawModel get getRawPrice => rawPrice.value;
+  set setRawPrice(RawModel val){
     rawPrice.value =val;
     rawPrice.refresh();
   }
-  Future<int> productPrice(String productName,bool isRawPrice) async{
-
-    print(productName);
-    if(isRawPrice){
-      try{
-        showLoader();
-        FirebaseFirestore.instance.collection("direct-selling-referral").where("name",isEqualTo: productName).get().then((value) {
-          value.docs.forEach((element) {
-            setRawPrice =   element['rawPrice'];
-          });
-        }).then((value) {
-          closeLoader();
-
+   productPrice(String productName) async{
+    try{
+     // showLoader();
+      FirebaseFirestore.instance.collection("direct-selling-referral").where("name",isEqualTo: productName).get().then((value) {
+        value.docs.forEach((element) {
+          RawModel rawModel = RawModel.fromJson(element.data());
+          setRawPrice = rawModel;
         });
-      }catch(e){
-        throw e;
-      }
+      }).then((value) {
+       // closeLoader();
 
-    }
-    else{
-      try{
-       // showLoader();
-        FirebaseFirestore.instance.collection("direct-selling-referral").where("name",isEqualTo: productName).get().then((value) {
-          value.docs.forEach((element) async{
-
-            setRawPrice = element['price'];
-          });
-        }).then((value) {
-         // closeLoader();
-        });
-      }catch(e){
-        throw e;
-      }
-
+      });
+    }catch(e){
+      throw e;
     }
 
   }

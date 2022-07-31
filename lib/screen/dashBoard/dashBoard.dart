@@ -37,7 +37,7 @@ class _DashBoardViewState extends State<DashBoardView> {
   void initState() {
     // TODO: implement initState
    if(dashBoardController.getIsRecall){
-     print("===============inti====================");
+
      _PartnerController.productCategoryDashBoard();
      dashBoardController.getBannerList();
      dashBoardController.setIsRecall(false);

@@ -80,15 +80,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                              text: _personalDetailsController.getDobController.text, textColor: Colors.white))
                         ],
                       ),
-                     /* Container(
-                        width: 100,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: Center(child: Text("Unverified")),
-                      ),*/
                     ],
                   ),
                 ),
@@ -103,9 +94,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Constants().inactiveColor,
                   ),
               child: Column(
-                /*itemExtent: 150,
-               diameterRatio: 1.2,*/
-
                 children: <Widget>[
                   SizedBox(
                     height: 40,

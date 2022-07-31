@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -196,4 +197,26 @@ class PersonalDetailsController extends GetxController{
     filePath.refresh();
   }
 
+  var telecallerContact = 0.obs;
+  int get getTelecallerContact => telecallerContact.value;
+  set setTelecallerContact(int val){
+    telecallerContact.value= val;
+    telecallerContact.refresh();
+  }
+  getTelecallers(String product)async{
+    try{
+
+      FirebaseFirestore.instance.collection("telecaller").where(product,isEqualTo: true).get().then((value) {
+        if(value.docs.isNotEmpty){
+          final _random = Random();
+
+           setTelecallerContact= value.docs.toList()[_random.nextInt(value.docs.length)]['mobile'];
+
+
+        }
+      });
+    }catch(e){
+      throw e;
+    }
+  }
 }

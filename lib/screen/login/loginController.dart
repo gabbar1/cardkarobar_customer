@@ -10,6 +10,8 @@ import 'package:upen/screen/dashBoard/homeNavigator.dart';
 import 'package:upen/screen/helper/constant.dart';
 import 'package:upen/screen/login/registerPage.dart';
 
+import '../../service/authservice.dart';
+
 
 
 class LoginController extends GetxController {
@@ -115,10 +117,11 @@ class LoginController extends GetxController {
   Future<void> register({String name,email,phone,dob,referalCode})async{
     showLoader();
     try{
-      FirebaseFirestore.instance.collection(Constants().userDetailsCollectionName).doc(phone).set(  {
+
+      FirebaseFirestore.instance.collection(Constants().userDetailsCollectionName).doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).set(  {
         "advisor_name" : name,
         "advisor_email" : email,
-        "advisor_phone_number" : phoneNo,
+        "advisor_phone_number" : FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "").toString(),
         "advisor_dob" : dob,
         "refered_By":referalCode,
         "isEnabled":false,
@@ -143,6 +146,26 @@ class LoginController extends GetxController {
       Get.snackbar("Error", e.toString());
       throw e;
     }
+  }
+
+
+  checkUserDetails(){
+    try{
+
+        FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).get().then((value) {
+          if(!value.exists){
+            Get.offAll(RegsiterView());
+          }else{
+            Get.offAll(AuthService().handleAuth());
+          }
+        });
+      //}
+    }catch(e){
+      Get.offAll(AuthService().handleAuth());
+      throw e;
+    }
+
+
   }
 
 }

@@ -127,11 +127,10 @@ class PartnerController extends GetxController{
     });
     FirebaseFirestore.instance.collection("direct-selling-referral").doc(category).collection("know-more").get().then((eValue) {
       eValue.docs.forEach((element) {
-        print("==============know more=====================");
-        print(jsonEncode(element.data()));
+
         KnowMore _knowMore =KnowMore.fromJson(element.data());
         setKnowMoreList(_knowMore);
-        print("==============know more=====================");
+
       });
     });
   }
@@ -143,8 +142,7 @@ class PartnerController extends GetxController{
       showLoader();
       FirebaseFirestore.instance.collection("leads").where("customer_phone",isEqualTo:leadModel.customerPhone ).
       where("product",isEqualTo: leadModel.product).get().then((value) {
-        print("===========================================");
-        print(value.docs.length);
+
         if(value.docs.length == 0){
           FirebaseFirestore.instance.collection("leads").add(leadModel.toJson()).then((value) {
             closeLoader();
@@ -166,8 +164,6 @@ class PartnerController extends GetxController{
   DocumentSnapshot lastDocument;
   Future<void> myLeads() async{
     leadList.value.clear();
-
-    print("===================New Load======================");
     FirebaseFirestore.instance.collection("leads").where("referral_id",isEqualTo:int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")) ).orderBy("time",descending: true).limit(5).get().then((value) {
       if(value.docs.isNotEmpty){
         lastDocument = value.docs[value.docs.length -1];
@@ -184,9 +180,8 @@ class PartnerController extends GetxController{
 
   }
   Future<void> myRefreshLeads() async{
-    print("===================onRefresh======================");
+
     FirebaseFirestore.instance.collection("leads").where("referral_id",isEqualTo:int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")) ).orderBy("time",descending: true).limit(5).startAfterDocument(lastDocument).get().then((value) {
-      print(value.docs.length);
       if(value.docs.isNotEmpty){
         lastDocument = value.docs[value.docs.length -1];
       }
@@ -201,9 +196,7 @@ class PartnerController extends GetxController{
 
 
   latestLead(String leadType){
-    print("=============leadType=================");
-    print("=============leadType=================");
-    print(leadType);
+
     leadList.value.clear();
     FirebaseFirestore.instance.collection("leads").where("referral_id",isEqualTo: int.parse(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", ""))).
     where("status",isEqualTo: leadType).limit(10).get().then((value) {
@@ -212,7 +205,7 @@ class PartnerController extends GetxController{
         lastDocument = value.docs[value.docs.length -1];
       }
       value.docs.forEach((element) {
-        print(element.data());
+
         LeadModel leadModel = LeadModel.fromJson(element.data());
         leadModel.key = element.id;
         setLeadList(leadModel);
@@ -237,7 +230,6 @@ class PartnerController extends GetxController{
   Future<void> mySearchLeads(int phone) async{
     leadList.value.clear();
 
-    print("===================New Load======================");
     FirebaseFirestore.instance.collection("leads").where("customer_phone",isEqualTo:phone ).get().then((value) {
       value.docs.forEach((element) {
         LeadModel leadModel = LeadModel.fromJson(element.data());
@@ -249,7 +241,6 @@ class PartnerController extends GetxController{
   Future<void> searchLeadByName(String name) async{
     leadList.value.clear();
     leadList.refresh();
-    print("===================New Load======================");
     FirebaseFirestore.instance.collection("leads").orderBy("customer_name")
         .where("customer_name",isGreaterThanOrEqualTo: name).where("customer_name",isLessThanOrEqualTo: name + '\uf8ff').get().then((value) {
       value.docs.forEach((element) {
@@ -353,7 +344,6 @@ class PartnerController extends GetxController{
       showLoader();
       FirebaseFirestore.instance.collection("product-category").where("categoryName",isEqualTo: val.categoryName).get().then((value) {
         if(value.docs.length == 0){
-          print("===================empty =================");
           FirebaseFirestore.instance.collection("product-category").add(val.toJson()).then((value) {
             closeLoader();
             productCategory();
@@ -431,9 +421,6 @@ class PartnerController extends GetxController{
             row.forEach((element) {
               keys.add(element.value);
             });
-            //keys = row;
-            print(keys);
-
             i++;
           }
           else {
@@ -445,9 +432,6 @@ class PartnerController extends GetxController{
             for (var key in keys) {
               tk = '${key.toString()}';
               temp[tk] = (row[j].runtimeType == String) ?  '\"${row[j].value.toString()}\"' : row[j] == null ? "NA ":row[j].value=="false"? false:row[j].value;
-
-
-              // print(temp1);
 
               j++;
             }
@@ -473,21 +457,13 @@ class PartnerController extends GetxController{
     try{
       jsonMap.value.clear();
       var jsonData =await excelToJson();
-
-      print("json-------------------------------------------------------");
-      print(jsonData);
-
       int cnd =0;
 
       showLoader(isLoading: true);
       jsonData.forEach((element) {
         showLoader(isLoading: true);
-        //  print(jsonData.length);
-        print("------------------json---------");
-        // print(jsonEncode(element));
-        Map<String, dynamic> map = json.decode(jsonEncode(element));
-        print(map["mobile"]);
 
+        Map<String, dynamic> map = json.decode(jsonEncode(element));
 
         try{
           FirebaseFirestore.instance.collection("leads").where("customer_phone",isEqualTo:map["mobile"] ).where("product",isEqualTo: map["product"]).where("leadClosed",isEqualTo: false).get().then((value) {

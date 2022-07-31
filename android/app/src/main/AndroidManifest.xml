@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cardkarobar.crm">
    <application
-        android:label="cardkarobar"
+        android:label="FinsEarn"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

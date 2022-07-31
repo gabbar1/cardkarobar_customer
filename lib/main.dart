@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,10 +7,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:upen/screen/login/loginController.dart';
 import 'screen/helper/constant.dart';
 import 'screen/updateScreen/forceUpdate.dart';
 import 'service/authservice.dart';
@@ -25,7 +29,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final prefs = await SharedPreferences.getInstance();
-
+  if (Platform.isAndroid) {
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
 
   String fcm = await FirebaseMessaging.instance.getToken();
   if(prefs.isBlank){
@@ -95,12 +101,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
- /* FirebaseMessaging firebaseMessaging;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();*/
 
 
-  var version = "9";
+LoginController loginController = Get.put(LoginController());
+  var version = "11";
   @override
   void initState() {
     super.initState();
@@ -113,13 +117,8 @@ class _MyAppState extends State<MyApp> {
       querySnapshot.docs.forEach((element) {
 
         if (version == element["version"].toString()) {
+          loginController.checkUserDetails();
 
-          Get.offAll(AuthService().handleAuth());
-          /*Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AuthService().handleAuth()));*/
-          // return AuthService().handleAuth();
         } else {
           Navigator.push(
               context,

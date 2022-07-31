@@ -211,7 +211,7 @@ class MyWorkController extends GetxController{
   var updateLeadList = <UserContactModel>[].obs;
   List<UserContactModel> get getUpdateLeadList => updateLeadList.value;
   setLead(UserContactModel val){
-    print("-------------------------");
+
     updateLeadList.value.add(val);
     updateLeadList.refresh();
   }
@@ -220,13 +220,10 @@ class MyWorkController extends GetxController{
     showLoader();
     int count =0;
 
-    print(jsonEncode(getContactCategoryList));
+
 
     getContactCategoryList.forEach((element) {
-      print("====================================================");
-      print(mobile);
-      print(name);
-      print(element.key);
+
       FirebaseFirestore.instance
           .collection("contactData").doc(element.key).update({
         "city":element.city,
@@ -240,9 +237,7 @@ class MyWorkController extends GetxController{
         "assigned_to":mobile
       }).then((value) {
         count = count +1;
-        print("=======================");
-        print(count);
-        print(getContactCategoryList.length);
+
         if(count==getContactCategoryList.length){
           closeLoader();
           Get.snackbar("Success", "Phone Number assigned to ${name}");
@@ -263,8 +258,7 @@ class MyWorkController extends GetxController{
     try {
       showLoader();
       if(isUpdate){
-        print("======================isUpdate=============l");
-        print(userContactModel.toJson());
+
         FirebaseFirestore.instance
             .collection("contactData").doc(userContactModel.key).update(userContactModel.toJson()).then((value) {
           closeLoader();
@@ -274,8 +268,7 @@ class MyWorkController extends GetxController{
           removeIndexValue(index,status);
         }).onError((error, stackTrace) {
           closeLoader();
-          print("================eorr------------");
-          print(stackTrace.toString());
+
           Get.snackbar("Error", error.toString(),backgroundColor: Constants().mainColor);
 
         });

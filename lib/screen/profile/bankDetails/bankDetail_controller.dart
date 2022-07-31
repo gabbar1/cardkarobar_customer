@@ -36,6 +36,10 @@ TextEditingController get getDocTypeController => docTypeController.value;
 
 var documentUrl = "".obs;
 String get getDocumentUrl => documentUrl.value;
+
+var isVerified = false.obs;
+bool get getIsVerified => isVerified.value;
+
 setBankModel(UserBankDetailModel val){
   bankNameController.value.text = val.bankName;
   nameController.value.text = val.accHolderName;
@@ -43,12 +47,14 @@ setBankModel(UserBankDetailModel val){
   ifscController.value.text = val.accHolderIfsc;
   docTypeController.value.text = val.accHolderDocType;
   documentUrl.value = val.accHolderDocUrl;
+  isVerified.value = val.docVerification==null ? false:val.docVerification;
 }
 Future<void> bankDetails() async{
 
   FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).collection("bank_details").doc("bank_details").get().then((value) {
 
     UserBankDetailModel userBankDetailModel = UserBankDetailModel.fromJson(value.data().cast());
+    userBankDetailModel.docVerification;
     setBankModel(userBankDetailModel);
   });
 
@@ -84,44 +90,7 @@ Future uploadPic(File image) async {
 
 
   }
- /* try{
-    showLoader();
-    var firebaseStorage = FirebaseStorage.instance.ref().child(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", ""));
-    var uploadTask = firebaseStorage.child(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).putFile(image);
-    var taskSnapshot = await uploadTask.storage;
-    Reference ref = await taskSnapshot.ref().child(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).child(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")+".jpeg");
-    String downloadUrl = await ref.getDownloadURL();
-    print("-----------------------------");
-    print(downloadUrl);
-    if(downloadUrl!=null){
 
-      UserBankDetailModel userBankDetailModel = UserBankDetailModel(
-        bankName: getBankNameController.text,
-        accHolderName: getNameController.text,
-        accHolderNumber: getAccountNumberController.text,
-        accHolderIfsc: getIFSCController.text,
-        accHolderDocType:getDocTypeController.text,
-        accHolderDocUrl: downloadUrl,
-        docVerification: false
-      );
-
-      FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).collection("bank_details").doc("bank_details").update(userBankDetailModel.toJson()).then((value) {
-        closeLoader();
-        Navigator.of(Get.context).pop();
-        Get.snackbar("Done", "Thank you for updating profile",backgroundColor: Constants().mainColor);
-      }).onError((error, stackTrace) {
-        closeLoader();
-        Get.snackbar("Error", error.toString(), backgroundColor: Constants().mainColor);
-      });;
-
-
-    }
-  }  catch( exception){
-    closeLoader();
-    Get.snackbar("Error",exception.toString(), backgroundColor: Constants().mainColor);
-
-    throw exception ;
-  }*/
 
 }
 
@@ -166,7 +135,7 @@ Future<void> _downloadLink(firebase_storage.Reference ref) async {
           accHolderIfsc: getIFSCController.text,
           accHolderDocType:getDocTypeController.text,
           accHolderDocUrl: link,
-          docVerification: false
+          docVerification: true
       );
 
       FirebaseFirestore.instance.collection("user_details").doc(FirebaseAuth.instance.currentUser.phoneNumber.replaceAll("+91", "")).collection("bank_details").doc("bank_details").set(userBankDetailModel.toJson()).then((value) {

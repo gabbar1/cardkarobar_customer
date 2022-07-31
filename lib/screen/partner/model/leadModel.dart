@@ -28,6 +28,8 @@ class LeadModel {
   bool isFixedPrice;
   bool isLeadClosed;
   String selfLead;
+  bool isEnabled;
+  String mode;
 
   LeadModel(
       {this.referralPrice,
@@ -56,7 +58,9 @@ class LeadModel {
         this.desireAmount,
         this.applicationNumber,
         this.isLeadClosed,
-        this.selfLead
+        this.selfLead,
+        this.isEnabled,
+        this.mode
       });
 
   LeadModel.fromJson(Map<String, dynamic> json) {
@@ -87,6 +91,8 @@ class LeadModel {
     applicationNumber = json['applicationNumber'];
     isLeadClosed = json['isLeadClosed'];
     selfLead = json['selfLead'];
+    isEnabled = json['isEnabled'];
+    mode =json['mode'];
 
   }
 
@@ -120,6 +126,8 @@ class LeadModel {
     data['applicationNumber'] = this.applicationNumber;
     data['isLeadClosed'] = this.isLeadClosed;
     data['selfLead'] = this.selfLead;
+    data['isEnabled'] = this.isEnabled;
+    data['mode'] = this.mode;
     return data;
   }
 }

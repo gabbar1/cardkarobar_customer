@@ -62,7 +62,6 @@ class _StatusUpdateState extends State<StatusUpdate> {
   TextEditingController customerLeadTypeController = TextEditingController();
   TextEditingController itrTypeController = TextEditingController();
   TextEditingController cardLimitController = TextEditingController();
-
   TextEditingController isFixedPriceController = TextEditingController();
   TextEditingController applicationNumberController = TextEditingController();
   AssignLeadController _assignLeadController = Get.find();
@@ -80,6 +79,10 @@ class _StatusUpdateState extends State<StatusUpdate> {
 
     if(widget.referModel.type == "Credit Card"){
       _assignLeadController.productList();
+
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        _assignLeadController.productPrice(widget.referModel.product);
+      });
     }
 
 
@@ -253,7 +256,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                           padding: const EdgeInsets.all(8.0),
                           child: Obx(()=>DropdownButtonFormField<String>(
                             focusColor: Colors.white,
-                            value: widget.appliedBank,
+                            value: leadBankController.text,
                             dropdownColor: Constants().appBackGroundColor,
                             decoration: InputDecoration(
                               focusColor: Constants().appBackGroundColor,
@@ -268,7 +271,8 @@ class _StatusUpdateState extends State<StatusUpdate> {
                                 onTap: () {
                                   existingBanklist = value.name;
                                   widget.referModel.referralPrice = value.price;
-                                  widget.referModel.product = value.name;
+                                  leadBankController.text = value.name;
+                                  _assignLeadController.productPrice(value.name);
                                 },
                                 value: value.name,
                                 child: CommonText(
@@ -290,7 +294,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                   ),
                   SizedBox(height: 10,),
                  //TODO need to implement change lead Type
-                 /* Container(
+                  Container(
                     decoration: const BoxDecoration(
                       color: Color(0xff0F1B25),
                       borderRadius: BorderRadius.all(
@@ -307,6 +311,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButtonFormField<String>(
+                            value: widget.referModel.selfLead,
                             focusColor: Colors.white,
                             dropdownColor: Constants().appBackGroundColor,
                             decoration: InputDecoration(
@@ -321,19 +326,15 @@ class _StatusUpdateState extends State<StatusUpdate> {
                               return DropdownMenuItem<String>(
                                 onTap: () async {
                                   if(value =="Self-Lead"){
-                                    _assignLeadController.productPrice(leadBankController.text,false).then((value) async {
-                                      print( await _assignLeadController.getRawPrice);
-                                      widget.referModel.referralPrice = _assignLeadController.getRawPrice;
-                                    });
+                                    widget.referModel.referralPrice = _assignLeadController.getRawPrice.price;
+                                    widget.referModel.selfLead = "Self-Lead";
 
-                                    existingBanklist = value;
+                                    //existingBanklist = value;
                                   }else{
-                                    _assignLeadController.productPrice(leadBankController.text,true).then((value)async {
-                                      print(await _assignLeadController.getRawPrice);
-                                      widget.referModel.referralPrice = _assignLeadController.getRawPrice;
-                                    });
-                                    existingBanklist = value;
 
+                                      widget.referModel.referralPrice = _assignLeadController.getRawPrice.rawPrice;
+                                      widget.referModel.selfLead = "Raw-Lead";
+                                    //  existingBanklist = value;
                                   }
                                   //
 
@@ -355,7 +356,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         ),
                       ],
                     ),
-                  ),*/
+                  ),
                   if (widget.referModel.customerLeadType == "Business") ...[
                     CommonTextInputWithTitle(
                         title: "Customer ITR",
@@ -403,27 +404,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         isReadOnly: true,
                         inputController: salaryController)
                   ]
-                ] /*else if (widget.referModel.type == "Home Loan") ...[
-                  CommonTextInputWithTitle(
-                      title: "Customer Lead Type",
-                      hint: "Enter Customer Lead Type",
-                      isReadOnly: true,
-                      inputController: customerLeadTypeController),
-                  if (widget.referModel.customerLeadType == "Business") ...[
-                    CommonTextInputWithTitle(
-                        title: "Customer ITR",
-                        hint: "Enter Customer ITR",
-                        isReadOnly: true,
-                        inputController: itrTypeController)
-                  ] else if (widget.referModel.customerLeadType ==
-                      "Salary") ...[
-                    CommonTextInputWithTitle(
-                        title: "Customer Salary",
-                        hint: "Enter Customer Salary",
-                        isReadOnly: true,
-                        inputController: salaryController)
-                  ]
-                ]*/,
+                ],
                 SizedBox(height: 10,),
                 CommonTextInputWithTitle(
                   isReadOnly: true,
@@ -533,6 +514,7 @@ class _StatusUpdateState extends State<StatusUpdate> {
                         _leadModel.comment = customerCommentController.text;
                         _leadModel.desireAmount = isFixedPriceController.text;
                         _leadModel.applicationNumber = applicationNumberController.text;
+                        _leadModel.product = leadBankController.text;
                         _leadModel.isLeadClosed = _type =='Rejected'?true :widget.referModel.isLeadClosed;
                         _assignLeadController.assignLead(_leadModel,widget.leadType).then((value) {
 
